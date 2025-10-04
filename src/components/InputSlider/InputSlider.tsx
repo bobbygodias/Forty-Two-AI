@@ -149,8 +149,12 @@ export const InputSlider: React.FC<InputSliderProps> = ({
             step={step}
             value={value}
             onValueChange={handleSliderChange}
-            thumbTintColor={theme.colors.primary}
-            minimumTrackTintColor={theme.colors.primary}
+            thumbTintColor={
+              disabled ? theme.colors.outline : theme.colors.primary
+            }
+            minimumTrackTintColor={
+              disabled ? theme.colors.outline : theme.colors.primary
+            }
             disabled={disabled}
           />
 
@@ -170,6 +174,7 @@ export const InputSlider: React.FC<InputSliderProps> = ({
 
         {showInput && (
           <TextInput
+            testID={`${testID}-input`}
             style={[styles.textInput, disabled && styles.disabledTextInput]}
             value={textValue}
             onChangeText={handleTextChange}

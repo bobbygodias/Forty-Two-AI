@@ -20,9 +20,14 @@ import {CompletionParams} from '../../utils/completionTypes';
 interface Props {
   settings: CompletionParams;
   onChange: (name: string, value: any) => void;
+  disabled?: boolean;
 }
 
-export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
+export const CompletionSettings: React.FC<Props> = ({
+  settings,
+  onChange,
+  disabled = false,
+}) => {
   const theme = useTheme();
   const styles = createStyles(theme);
   const l10n = React.useContext(L10nContext);
@@ -41,6 +46,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         step={step}
         precision={Number.isInteger(step) ? 0 : 2}
         debounceMs={300} // Enable debouncing for sliders
+        disabled={disabled}
       />
     </View>
   );
@@ -64,10 +70,13 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         </Text>
         <TextInput
           value={value}
-          onChangeText={_value => onChange(String(name), _value)}
+          onChangeText={
+            disabled ? () => {} : _value => onChange(String(name), _value)
+          }
           keyboardType="numeric"
           error={!validation.isValid}
           helperText={validation.errorMessage}
+          editable={!disabled}
           testID={`${String(name)}-input`}
         />
       </View>
@@ -86,7 +95,8 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
           </Text>
           <Switch
             value={settings[name]}
-            onValueChange={value => onChange(name, value)}
+            onValueChange={disabled ? () => {} : value => onChange(name, value)}
+            disabled={disabled}
             testID={`${name}-switch`}
           />
         </View>
@@ -104,7 +114,11 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         {description && <Text style={styles.description}>{description}</Text>}
         <SegmentedButtons
           value={(settings.mirostat ?? 0).toString()}
-          onValueChange={value => onChange('mirostat', parseInt(value, 10))}
+          onValueChange={
+            disabled
+              ? () => {} // No-op function when disabled
+              : value => onChange('mirostat', parseInt(value, 10))
+          }
           density="high"
           buttons={[
             {
@@ -127,7 +141,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="completion-settings">
       {renderIntegerInput({name: 'n_predict'})}
       {renderSwitch('include_thinking_in_context')}
       {renderSlider({name: 'temperature'})}

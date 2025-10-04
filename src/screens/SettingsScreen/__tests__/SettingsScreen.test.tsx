@@ -1,11 +1,21 @@
 import React from 'react';
 import {Platform, Keyboard} from 'react-native';
 
-import {fireEvent, render, waitFor, act} from '../../../../jest/test-utils';
+import {
+  fireEvent,
+  render as baseRender,
+  waitFor,
+  act,
+} from '../../../../jest/test-utils';
 
 import {SettingsScreen} from '../SettingsScreen';
 
 import {modelStore, uiStore} from '../../../store';
+
+jest.useFakeTimers();
+
+const render = (ui: React.ReactElement, options: any = {}) =>
+  baseRender(ui, {withBottomSheetProvider: true, ...options});
 
 describe('SettingsScreen', () => {
   beforeEach(() => {
@@ -130,7 +140,7 @@ describe('SettingsScreen', () => {
     expect(uiStore.setColorScheme).toHaveBeenCalledWith('dark');
   });
 
-  it('toggles Metal switch on iOS and adjusts GPU layers', async () => {
+  it('toggles GPU acceleration switch on iOS and adjusts GPU layers', async () => {
     Platform.OS = 'ios';
     jest.useFakeTimers();
 
@@ -138,13 +148,13 @@ describe('SettingsScreen', () => {
       withSafeArea: true,
       withNavigation: true,
     });
-    const metalSwitch = getByTestId('metal-switch');
+    const gpuSwitch = getByTestId('gpu-acceleration-switch');
 
     act(() => {
-      fireEvent(metalSwitch, 'valueChange', true);
+      fireEvent(gpuSwitch, 'valueChange', true);
     });
 
-    expect(modelStore.updateUseMetal).toHaveBeenCalledWith(true);
+    expect(modelStore.setNoGpuDevices).toHaveBeenCalledWith(false);
 
     const gpuSlider = getByTestId('gpu-layers-slider');
 

@@ -54,7 +54,9 @@ export const SettingsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
   const theme = useTheme();
   const styles = createStyles(theme);
-  const [contextSize, setContextSize] = useState(modelStore.n_ctx.toString());
+  const [contextSize, setContextSize] = useState(
+    modelStore.contextInitParams.n_ctx.toString(),
+  );
   const [isValidInput, setIsValidInput] = useState(true);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const inputRef = useRef<RNTextInput>(null);
@@ -91,7 +93,7 @@ export const SettingsScreen: React.FC = observer(() => {
   ).current;
 
   useEffect(() => {
-    setContextSize(modelStore.n_ctx.toString());
+    setContextSize(modelStore.contextInitParams.n_ctx.toString());
   }, []);
 
   useEffect(() => {
@@ -103,7 +105,7 @@ export const SettingsScreen: React.FC = observer(() => {
   const handleOutsidePress = () => {
     Keyboard.dismiss();
     inputRef.current?.blur();
-    setContextSize(modelStore.n_ctx.toString());
+    setContextSize(modelStore.contextInitParams.n_ctx.toString());
     setIsValidInput(true);
     setShowKeyCacheMenu(false);
     setShowValueCacheMenu(false);
@@ -141,7 +143,7 @@ export const SettingsScreen: React.FC = observer(() => {
       : []),
   ];
 
-  const getCacheTypeLabel = (value: CacheType) => {
+  const getCacheTypeLabel = (value: CacheType | string) => {
     return (
       cacheTypeOptions.find(option => option.value === value)?.label || value
     );
@@ -210,10 +212,12 @@ export const SettingsScreen: React.FC = observer(() => {
                         </Text>
                       </View>
                       <Switch
-                        testID="metal-switch"
-                        value={modelStore.useMetal}
+                        testID="gpu-acceleration-switch"
+                        value={
+                          modelStore.contextInitParams.no_gpu_devices === false
+                        }
                         onValueChange={value =>
-                          modelStore.updateUseMetal(value)
+                          modelStore.setNoGpuDevices(!value)
                         }
                         // disabled={!isIOS18OrHigher}
                         // We don't disable for cases where the users has has set to true in the past.
@@ -221,8 +225,10 @@ export const SettingsScreen: React.FC = observer(() => {
                     </View>
                     <InputSlider
                       testID="gpu-layers-slider"
-                      disabled={!modelStore.useMetal}
-                      value={modelStore.n_gpu_layers}
+                      disabled={
+                        modelStore.contextInitParams.no_gpu_devices !== false
+                      }
+                      value={modelStore.contextInitParams.n_gpu_layers}
                       onValueChange={value =>
                         modelStore.setNGPULayers(Math.round(value))
                       }
@@ -233,7 +239,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <Text variant="labelSmall" style={styles.textDescription}>
                       {l10n.settings.layersOnGPU.replace(
                         '{{gpuLayers}}',
-                        modelStore.n_gpu_layers.toString(),
+                        modelStore.contextInitParams.n_gpu_layers.toString(),
                       )}
                     </Text>
                   </View>
@@ -287,7 +293,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <InputSlider
                       testID="batch-size-slider"
                       label={l10n.settings.batchSize}
-                      value={modelStore.n_batch}
+                      value={modelStore.contextInitParams.n_batch}
                       onValueChange={value =>
                         modelStore.setNBatch(Math.round(value))
                       }
@@ -297,11 +303,15 @@ export const SettingsScreen: React.FC = observer(() => {
                     />
                     <Text variant="labelSmall" style={styles.textDescription}>
                       {l10n.settings.batchSizeDescription
-                        .replace('{{batchSize}}', modelStore.n_batch.toString())
+                        .replace(
+                          '{{batchSize}}',
+                          modelStore.contextInitParams.n_batch.toString(),
+                        )
                         .replace(
                           '{{effectiveBatch}}',
-                          modelStore.n_batch > modelStore.n_ctx
-                            ? ` (${l10n.settings.effectiveLabel}: ${modelStore.n_ctx})`
+                          modelStore.contextInitParams.n_batch >
+                            modelStore.contextInitParams.n_ctx
+                            ? ` (${l10n.settings.effectiveLabel}: ${modelStore.contextInitParams.n_ctx})`
                             : '',
                         )}
                     </Text>
@@ -313,7 +323,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <InputSlider
                       testID="ubatch-size-slider"
                       label={l10n.settings.physicalBatchSize}
-                      value={modelStore.n_ubatch}
+                      value={modelStore.contextInitParams.n_ubatch}
                       onValueChange={value =>
                         modelStore.setNUBatch(Math.round(value))
                       }
@@ -325,15 +335,18 @@ export const SettingsScreen: React.FC = observer(() => {
                       {l10n.settings.physicalBatchSizeDescription
                         .replace(
                           '{{physicalBatchSize}}',
-                          modelStore.n_ubatch.toString(),
+                          modelStore.contextInitParams.n_ubatch.toString(),
                         )
                         .replace(
                           '{{effectivePhysicalBatch}}',
-                          modelStore.n_ubatch >
-                            Math.min(modelStore.n_batch, modelStore.n_ctx)
+                          modelStore.contextInitParams.n_ubatch >
+                            Math.min(
+                              modelStore.contextInitParams.n_batch,
+                              modelStore.contextInitParams.n_ctx,
+                            )
                             ? ` (${l10n.settings.effectiveLabel}: ${Math.min(
-                                modelStore.n_batch,
-                                modelStore.n_ctx,
+                                modelStore.contextInitParams.n_batch,
+                                modelStore.contextInitParams.n_ctx,
                               )})`
                             : '',
                         )}
@@ -346,7 +359,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <InputSlider
                       testID="thread-count-slider"
                       label={l10n.settings.cpuThreads}
-                      value={modelStore.n_threads}
+                      value={modelStore.contextInitParams.n_threads}
                       onValueChange={value =>
                         modelStore.setNThreads(Math.round(value))
                       }
@@ -356,7 +369,10 @@ export const SettingsScreen: React.FC = observer(() => {
                     />
                     <Text variant="labelSmall" style={styles.textDescription}>
                       {l10n.settings.cpuThreadsDescription
-                        .replace('{{threads}}', modelStore.n_threads.toString())
+                        .replace(
+                          '{{threads}}',
+                          modelStore.contextInitParams.n_threads.toString(),
+                        )
                         .replace(
                           '{{maxThreads}}',
                           modelStore.max_threads.toString(),
@@ -380,7 +396,7 @@ export const SettingsScreen: React.FC = observer(() => {
                       </View>
                       <Switch
                         testID="flash-attention-switch"
-                        value={modelStore.flash_attn}
+                        value={modelStore.contextInitParams.flash_attn}
                         onValueChange={value => modelStore.setFlashAttn(value)}
                       />
                     </View>
@@ -397,7 +413,7 @@ export const SettingsScreen: React.FC = observer(() => {
                         <Text
                           variant="labelSmall"
                           style={styles.textDescription}>
-                          {modelStore.flash_attn
+                          {modelStore.contextInitParams.flash_attn
                             ? l10n.settings.keyCacheTypeDescription
                             : l10n.settings.keyCacheTypeDisabledDescription}
                         </Text>
@@ -409,7 +425,7 @@ export const SettingsScreen: React.FC = observer(() => {
                           onPress={handleKeyCachePress}
                           style={styles.menuButton}
                           contentStyle={styles.buttonContent}
-                          disabled={!modelStore.flash_attn}
+                          disabled={!modelStore.contextInitParams.flash_attn}
                           icon={({size, color}) => (
                             <Icon
                               source="chevron-down"
@@ -417,7 +433,9 @@ export const SettingsScreen: React.FC = observer(() => {
                               color={color}
                             />
                           )}>
-                          {getCacheTypeLabel(modelStore.cache_type_k)}
+                          {getCacheTypeLabel(
+                            modelStore.contextInitParams.cache_type_k,
+                          )}
                         </Button>
                         <Menu
                           visible={showKeyCacheMenu}
@@ -430,7 +448,8 @@ export const SettingsScreen: React.FC = observer(() => {
                               style={styles.menu}
                               label={option.label}
                               selected={
-                                option.value === modelStore.cache_type_k
+                                option.value ===
+                                modelStore.contextInitParams.cache_type_k
                               }
                               onPress={() => {
                                 modelStore.setCacheTypeK(option.value);
@@ -454,7 +473,7 @@ export const SettingsScreen: React.FC = observer(() => {
                         <Text
                           variant="labelSmall"
                           style={styles.textDescription}>
-                          {modelStore.flash_attn
+                          {modelStore.contextInitParams.flash_attn
                             ? l10n.settings.valueCacheTypeDescription
                             : l10n.settings.valueCacheTypeDisabledDescription}
                         </Text>
@@ -466,7 +485,7 @@ export const SettingsScreen: React.FC = observer(() => {
                           onPress={handleValueCachePress}
                           style={styles.menuButton}
                           contentStyle={styles.buttonContent}
-                          disabled={!modelStore.flash_attn}
+                          disabled={!modelStore.contextInitParams.flash_attn}
                           icon={({size, color}) => (
                             <Icon
                               source="chevron-down"
@@ -474,7 +493,9 @@ export const SettingsScreen: React.FC = observer(() => {
                               color={color}
                             />
                           )}>
-                          {getCacheTypeLabel(modelStore.cache_type_v)}
+                          {getCacheTypeLabel(
+                            modelStore.contextInitParams.cache_type_v,
+                          )}
                         </Button>
                         <Menu
                           visible={showValueCacheMenu}
@@ -487,7 +508,8 @@ export const SettingsScreen: React.FC = observer(() => {
                               label={option.label}
                               style={styles.menu}
                               selected={
-                                option.value === modelStore.cache_type_v
+                                option.value ===
+                                modelStore.contextInitParams.cache_type_v
                               }
                               onPress={() => {
                                 modelStore.setCacheTypeV(option.value);
@@ -521,7 +543,7 @@ export const SettingsScreen: React.FC = observer(() => {
                   </View>
                   <Switch
                     testID="use-mlock-switch"
-                    value={modelStore.use_mlock}
+                    value={modelStore.contextInitParams.use_mlock}
                     onValueChange={value => modelStore.setUseMlock(value)}
                   />
                 </View>
@@ -549,7 +571,7 @@ export const SettingsScreen: React.FC = observer(() => {
                       icon={({size, color}) => (
                         <Icon source="chevron-down" size={size} color={color} />
                       )}>
-                      {getMmapLabel(modelStore.use_mmap)}
+                      {getMmapLabel(modelStore.contextInitParams.use_mmap)}
                     </Button>
                     <Menu
                       visible={showMmapMenu}
@@ -561,7 +583,10 @@ export const SettingsScreen: React.FC = observer(() => {
                           key={option.value}
                           style={styles.menu}
                           label={option.label}
-                          selected={option.value === modelStore.use_mmap}
+                          selected={
+                            option.value ===
+                            modelStore.contextInitParams.use_mmap
+                          }
                           onPress={() => {
                             modelStore.setUseMmap(option.value);
                             setShowMmapMenu(false);

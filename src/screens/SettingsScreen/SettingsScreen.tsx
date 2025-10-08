@@ -7,7 +7,8 @@ import {
   ScrollView,
   TextInput as RNTextInput,
   Alert,
-  NativeModules,
+  Linking,
+  TouchableOpacity,
 } from 'react-native';
 
 import {debounce} from 'lodash';
@@ -15,7 +16,13 @@ import {observer} from 'mobx-react-lite';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Switch, Text, Card, Button, Icon, List} from 'react-native-paper';
 
-import {GlobeIcon, MoonIcon, CpuChipIcon, ShareIcon} from '../../assets/icons';
+import {
+  GlobeIcon,
+  MoonIcon,
+  CpuChipIcon,
+  ShareIcon,
+  LinkExternalIcon,
+} from '../../assets/icons';
 import {
   TextInput,
   Menu,
@@ -34,8 +41,7 @@ import {AvailableLanguage} from '../../store/UIStore';
 import {L10nContext} from '../../utils';
 import {CacheType} from '../../utils/types';
 import {exportLegacyChatSessions} from '../../utils/exportUtils';
-
-const {DeviceInfoModule} = NativeModules;
+import {checkGpuSupport} from '../../utils/deviceCapabilities';
 
 // Language display names in their native form
 const languageNames: Record<AvailableLanguage, string> = {
@@ -53,6 +59,10 @@ const languageNames: Record<AvailableLanguage, string> = {
   zh: '中文 (ZH)',
 };
 
+// OpenCL documentation URL (not localized)
+const OPENCL_DOCS_URL =
+  'https://github.com/ggml-org/llama.cpp/blob/master/docs/backend/OPENCL.md#model-preparation';
+
 export const SettingsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
   const theme = useTheme();
@@ -68,7 +78,12 @@ export const SettingsScreen: React.FC = observer(() => {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showMmapMenu, setShowMmapMenu] = useState(false);
   const [showHfTokenDialog, setShowHfTokenDialog] = useState(false);
-  const [supportsOpenCL, setSupportsOpenCL] = useState(false);
+  const [gpuSupported, setGpuSupported] = useState(false);
+  const [deviceCapabilities, setDeviceCapabilities] = useState<{
+    hasAdreno: boolean;
+    hasI8mm: boolean;
+    hasDotProd: boolean;
+  } | null>(null);
   const [keyCacheAnchor, setKeyCacheAnchor] = useState<{x: number; y: number}>({
     x: 0,
     y: 0,
@@ -99,16 +114,37 @@ export const SettingsScreen: React.FC = observer(() => {
   useEffect(() => {
     setContextSize(modelStore.contextInitParams.n_ctx.toString());
 
-    // Check for OpenCL support on Android
-    if (Platform.OS === 'android' && DeviceInfoModule?.getGPUInfo) {
-      DeviceInfoModule.getGPUInfo()
-        .then((gpuInfo: {supportsOpenCL: boolean}) => {
-          setSupportsOpenCL(gpuInfo.supportsOpenCL);
-        })
-        .catch(() => {
-          setSupportsOpenCL(false);
+    // Check for GPU support (Metal on iOS 18+, OpenCL on Android with Adreno + CPU features)
+    const checkGpuCapabilities = async () => {
+      const gpuCapabilities = await checkGpuSupport();
+
+      setGpuSupported(gpuCapabilities.isSupported);
+
+      // Store device capabilities for displaying appropriate error messages
+      if (gpuCapabilities.details) {
+        setDeviceCapabilities({
+          hasAdreno: gpuCapabilities.details.hasAdreno ?? false,
+          hasI8mm: gpuCapabilities.details.hasI8mm ?? false,
+          hasDotProd: gpuCapabilities.details.hasDotProd ?? false,
         });
-    }
+      }
+
+      // If GPU is not supported but currently enabled,
+      // automatically disable it to prevent using non-functional GPU acceleration
+      if (
+        !gpuCapabilities.isSupported &&
+        modelStore.contextInitParams.no_gpu_devices === false
+      ) {
+        modelStore.setNoGpuDevices(true);
+        modelStore.setNGPULayers(0);
+      }
+    };
+
+    checkGpuCapabilities().catch(error => {
+      console.warn('Failed to check GPU capabilities:', error);
+      setGpuSupported(false);
+      setDeviceCapabilities(null);
+    });
   }, []);
 
   useEffect(() => {
@@ -201,21 +237,40 @@ export const SettingsScreen: React.FC = observer(() => {
   const isIOS18OrHigher =
     Platform.OS === 'ios' && parseInt(Platform.Version as string, 10) >= 18;
 
-  // Show GPU settings for iOS or Android with OpenCL support
-  const showGPUSettings =
-    Platform.OS === 'ios' || (Platform.OS === 'android' && supportsOpenCL);
+  // Show GPU settings for iOS or Android (always show on Android to explain why it's not available)
+  const showGPUSettings = Platform.OS === 'ios' || Platform.OS === 'android';
 
-  // Determine GPU label and description based on platform
+  // Determine GPU label and description based on platform and availability
   const gpuLabel =
     Platform.OS === 'ios'
       ? l10n.settings.metal
       : l10n.settings.openCL || 'OpenCL';
-  const gpuDescription =
-    Platform.OS === 'ios'
-      ? isIOS18OrHigher
-        ? l10n.settings.metalDescription
-        : l10n.settings.metalRequiresNewerIOS
-      : l10n.settings.openCLDescription;
+
+  // Determine the appropriate description based on platform and GPU support
+  let gpuDescription = '';
+  if (Platform.OS === 'ios') {
+    gpuDescription = isIOS18OrHigher
+      ? l10n.settings.metalDescription
+      : l10n.settings.metalRequiresNewerIOS;
+  } else if (Platform.OS === 'android') {
+    if (gpuSupported) {
+      gpuDescription = l10n.settings.openCLDescription;
+    } else if (deviceCapabilities) {
+      // Explain why OpenCL is not available
+      if (!deviceCapabilities.hasAdreno) {
+        gpuDescription = l10n.settings.openCLNotAvailable;
+      } else if (
+        !deviceCapabilities.hasI8mm ||
+        !deviceCapabilities.hasDotProd
+      ) {
+        gpuDescription = l10n.settings.openCLMissingCPUFeatures;
+      } else {
+        gpuDescription = l10n.settings.openCLNotAvailable;
+      }
+    } else {
+      gpuDescription = l10n.settings.openCLNotAvailable;
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -248,8 +303,7 @@ export const SettingsScreen: React.FC = observer(() => {
                         onValueChange={value =>
                           modelStore.setNoGpuDevices(!value)
                         }
-                        // disabled={!isIOS18OrHigher}
-                        // We don't disable for cases where the users has has set to true in the past.
+                        disabled={!gpuSupported}
                       />
                     </View>
                     <InputSlider
@@ -271,6 +325,33 @@ export const SettingsScreen: React.FC = observer(() => {
                         modelStore.contextInitParams.n_gpu_layers.toString(),
                       )}
                     </Text>
+                    {Platform.OS === 'android' && gpuSupported && (
+                      <View>
+                        <Text
+                          variant="labelSmall"
+                          style={styles.textDescription}>
+                          {l10n.settings.openCLQuantizationNote}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => Linking.openURL(OPENCL_DOCS_URL)}
+                          style={styles.linkContainer}>
+                          <Text
+                            variant="labelSmall"
+                            style={[
+                              styles.textDescription,
+                              {color: theme.colors.primary},
+                            ]}>
+                            {l10n.settings.openCLDocsLink}
+                          </Text>
+                          <LinkExternalIcon
+                            width={12}
+                            height={12}
+                            stroke={theme.colors.primary}
+                            style={styles.linkIcon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
                   <Divider />
                 </>

@@ -44,6 +44,13 @@ export const l10n = {
       openCL: 'OpenCL (Experimental)',
       openCLDescription:
         'GPU acceleration for Adreno GPUs. Faster prompt processing, but generation may not always be faster.',
+      openCLNotAvailable:
+        'OpenCL is not available on this device. Requires Adreno GPU with i8mm and dotprod CPU features.',
+      openCLMissingCPUFeatures:
+        'OpenCL requires i8mm and dotprod CPU features, which are not available on this device.',
+      openCLQuantizationNote:
+        'Note: Pure Q4_0 quantized models perform best with OpenCL.',
+      openCLDocsLink: 'See llama.cpp OpenCL docs for details.',
       layersOnGPU: 'Layers on GPU: {{gpuLayers}}',
       // Context Size
       contextSize: 'Context Size',
@@ -1207,7 +1214,9 @@ export const l10n = {
           gpuType: 'GPU Type',
           gpuRenderer: 'Renderer',
           gpuVendor: 'Vendor',
+          metalSupport: 'Metal Support',
           openclSupport: 'OpenCL Support',
+          openclRequirement: 'Requires i8mm & dotprod',
         },
         instructions: {
           format:
@@ -1294,6 +1303,13 @@ export const l10n = {
       openCL: 'OpenCL（実験的）',
       openCLDescription:
         'Adreno GPU向けのGPU加速。プロンプト処理は高速化されますが、生成速度は必ずしも速くなりません。',
+      openCLNotAvailable:
+        'このデバイスではOpenCLを利用できません。i8mmとdotprodのCPU機能を備えたAdreno GPUが必要です。',
+      openCLMissingCPUFeatures:
+        'OpenCLにはi8mmとdotprodのCPU機能が必要ですが、このデバイスでは利用できません。',
+      openCLQuantizationNote:
+        '注：純粋なQ4_0量子化モデルがOpenCLで最高のパフォーマンスを発揮します。',
+      openCLDocsLink: '詳細はllama.cpp OpenCLドキュメントをご覧ください。',
       layersOnGPU: 'GPUレイヤー：{{gpuLayers}}',
       // Context Size
       contextSize: 'コンテキストサイズ',
@@ -2460,7 +2476,9 @@ export const l10n = {
           gpuType: 'GPUタイプ',
           gpuRenderer: 'レンダラー',
           gpuVendor: 'ベンダー',
+          metalSupport: 'Metalサポート',
           openclSupport: 'OpenCLサポート',
+          openclRequirement: 'i8mmとdotprodが必要',
         },
         instructions: {
           format:
@@ -2549,6 +2567,12 @@ export const l10n = {
       openCL: 'OpenCL（实验性）',
       openCLDescription:
         'Adreno GPU的GPU加速。提示处理更快，但生成速度不一定更快。',
+      openCLNotAvailable:
+        '此设备不支持OpenCL。需要具有i8mm和dotprod CPU功能的Adreno GPU。',
+      openCLMissingCPUFeatures:
+        'OpenCL需要i8mm和dotprod CPU功能，但此设备不支持。',
+      openCLQuantizationNote: '注意：纯Q4_0量化模型在OpenCL上性能最佳。',
+      openCLDocsLink: '详情请参阅llama.cpp OpenCL文档。',
       layersOnGPU: 'GPU层数：{{gpuLayers}}',
       // Context Size
       contextSize: '上下文长度',
@@ -3647,7 +3671,9 @@ export const l10n = {
           gpuType: 'GPU类型',
           gpuRenderer: '渲染器',
           gpuVendor: '供应商',
+          metalSupport: 'Metal支持',
           openclSupport: 'OpenCL支持',
+          openclRequirement: '需要i8mm和dotprod',
         },
         instructions: {
           format:

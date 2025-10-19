@@ -12,7 +12,7 @@ import {v4 as uuidv4} from 'uuid';
 import 'react-native-get-random-values';
 import {observer} from 'mobx-react-lite';
 import * as RNFS from '@dr.pogodin/react-native-fs';
-import DocumentPicker from 'react-native-document-picker';
+import {pick, types} from '@react-native-documents/picker';
 import {Portal} from 'react-native-paper';
 
 import {useTheme} from '../../hooks';
@@ -125,9 +125,8 @@ export const ModelsScreen: React.FC = observer(() => {
   };
 
   const handleAddLocalModel = async () => {
-    DocumentPicker.pick({
-      type:
-        Platform.OS === 'ios' ? 'public.data' : DocumentPicker.types.allFiles,
+    pick({
+      type: Platform.OS === 'ios' ? 'public.data' : types.allFiles,
     })
       .then(async res => {
         let [file] = res;
@@ -246,18 +245,21 @@ export const ModelsScreen: React.FC = observer(() => {
       };
     }
 
-    return filteredAndSortedModels.reduce((acc, item) => {
-      const groupKey =
-        item.origin === ModelOrigin.LOCAL || item.isLocal
-          ? l10n.models.labels.localModel
-          : item.type || l10n.models.labels.unknownGroup;
+    return filteredAndSortedModels.reduce(
+      (acc, item) => {
+        const groupKey =
+          item.origin === ModelOrigin.LOCAL || item.isLocal
+            ? l10n.models.labels.localModel
+            : item.type || l10n.models.labels.unknownGroup;
 
-      if (!acc[groupKey]) {
-        acc[groupKey] = [];
-      }
-      acc[groupKey].push(item);
-      return acc;
-    }, {} as Record<string, Model[]>);
+        if (!acc[groupKey]) {
+          acc[groupKey] = [];
+        }
+        acc[groupKey].push(item);
+        return acc;
+      },
+      {} as Record<string, Model[]>,
+    );
   }).get();
 
   const toggleGroup = (type: string) => {

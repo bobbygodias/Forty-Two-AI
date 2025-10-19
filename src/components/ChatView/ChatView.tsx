@@ -9,7 +9,6 @@ import {
   View,
   TouchableOpacity,
   Animated,
-  Platform,
 } from 'react-native';
 
 import dayjs from 'dayjs';
@@ -747,11 +746,7 @@ export const ChatView = observer(
 
     const inputBackgroundColor = activePal?.color?.[1]
       ? activePal.color?.[1]
-      : Platform.OS === 'ios'
-      ? theme.colors.surface
-      : theme.colors.secondaryContainer; // Since on Android, we don't have shadow enabled, use secondaryContainer for better contrast
-    // Use surface for Android when new architecture is enabled
-
+      : theme.colors.surface;
     return (
       <UserContext.Provider value={user}>
         <View style={styles.container} onLayout={onLayout}>
@@ -803,15 +798,19 @@ export const ChatView = observer(
                   }}
                 />
               </Animated.View>
-              <ChatPalModelPickerSheet
-                isVisible={isPickerVisible}
-                onClose={() => setIsPickerVisible(false)}
-                onModelSelect={handleModelSelect}
-                onPalSelect={handlePalSelect}
-                onPalSettingsSelect={onPalSettingsSelect}
-                chatInputHeight={chatInputHeight.height}
-                keyboardHeight={keyboardHeight}
-              />
+              {/* Conditionally render the sheet to avoid keyboard issues. 
+              It makes the disappearing sudden, but it's better than the keyboard issue.*/}
+              {isPickerVisible && (
+                <ChatPalModelPickerSheet
+                  isVisible={isPickerVisible}
+                  onClose={() => setIsPickerVisible(false)}
+                  onModelSelect={handleModelSelect}
+                  onPalSelect={handlePalSelect}
+                  onPalSettingsSelect={onPalSettingsSelect}
+                  chatInputHeight={chatInputHeight.height}
+                  keyboardHeight={keyboardHeight}
+                />
+              )}
             </View>
           </KeyboardAvoidingView>
           <ImageView

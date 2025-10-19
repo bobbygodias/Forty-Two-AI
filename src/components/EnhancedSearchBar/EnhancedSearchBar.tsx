@@ -1,26 +1,12 @@
-import React, {
-  useState,
-  useContext,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
-import {
-  Keyboard,
-  Platform,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import React, {useState, useContext, useCallback, useMemo} from 'react';
+import {View, TouchableOpacity, ScrollView, TextInput} from 'react-native';
 
 import {Text} from 'react-native-paper';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useTheme} from '../../hooks';
 
-import {Sheet} from '../Sheet';
+import {Sheet} from '..';
 import {createStyles} from './styles';
 
 import {L10nContext} from '../../utils';
@@ -55,24 +41,6 @@ export const EnhancedSearchBar = ({
   const [activeFilterSheet, setActiveFilterSheet] = useState<FilterType | null>(
     null,
   );
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardWillShow = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      () => setKeyboardVisible(true),
-    );
-    const keyboardWillHide = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => setKeyboardVisible(false),
-    );
-
-    return () => {
-      keyboardWillShow.remove();
-      keyboardWillHide.remove();
-    };
-  }, []);
-  const insets = useSafeAreaInsets();
 
   // Filter options - memoized to prevent recreating on every render
 
@@ -173,7 +141,8 @@ export const EnhancedSearchBar = ({
           {value.length > 0 && (
             <TouchableOpacity
               onPress={handleClearSearch}
-              style={styles.clearButton}>
+              style={styles.clearButton}
+              hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
               <Icon
                 name="close"
                 size={20}
@@ -192,6 +161,7 @@ export const EnhancedSearchBar = ({
         contentContainerStyle={styles.filterDropdownContent}>
         {/* Author Filter Button */}
         <TouchableOpacity
+          testID="filter-button-author"
           onPress={() => openFilterSheet('author')}
           style={[
             styles.filterDropdownButton,
@@ -218,6 +188,7 @@ export const EnhancedSearchBar = ({
 
         {/* Sort Filter Button */}
         <TouchableOpacity
+          testID="filter-button-sort"
           onPress={() => openFilterSheet('sort')}
           style={[
             styles.filterDropdownButton,
@@ -247,11 +218,12 @@ export const EnhancedSearchBar = ({
         isVisible={activeFilterSheet === 'author'}
         onClose={closeFilterSheet}
         title={l10n.models.search.filters.author}>
-        <Sheet.View
-          // eslint-disable-next-line react-native/no-inline-styles
-          style={{paddingBottom: keyboardVisible ? 0 : insets.bottom}}>
+        <Sheet.ScrollView
+          bottomOffset={16}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.sheetScrollContent}>
           <View style={styles.authorInputContainer}>
-            <Sheet.TextInput
+            <TextInput
               defaultValue={filters.author}
               // value={filters.author}
               onChangeText={author => onFiltersChange({author})}
@@ -263,6 +235,7 @@ export const EnhancedSearchBar = ({
             {filters.author.length > 0 && (
               <TouchableOpacity
                 style={styles.clearButton}
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
                 onPress={() => onFiltersChange({author: ''})}>
                 <XIcon
                   width={20}
@@ -272,7 +245,7 @@ export const EnhancedSearchBar = ({
               </TouchableOpacity>
             )}
           </View>
-        </Sheet.View>
+        </Sheet.ScrollView>
       </Sheet>
 
       <Sheet
@@ -280,17 +253,34 @@ export const EnhancedSearchBar = ({
         onClose={closeFilterSheet}
         title={l10n.models.search.filters.sortBy}>
         <Sheet.View style={styles.filterSheetContent}>
-          {sortOptions.map(option => (
-            <TouchableOpacity
-              key={option.value}
-              onPress={() => handleSortFilterSelect(option.value)}
-              style={styles.filterOption}>
-              <Text style={styles.filterOptionText}>{option.label}</Text>
-              {filters.sortBy === option.value && (
-                <Icon name="check" size={20} color={theme.colors.primary} />
-              )}
-            </TouchableOpacity>
-          ))}
+          {sortOptions.map(option => {
+            const isSelected = filters.sortBy === option.value;
+            return (
+              <TouchableOpacity
+                key={option.value}
+                onPress={() => handleSortFilterSelect(option.value)}
+                style={[
+                  styles.filterOption,
+                  isSelected && styles.filterOptionSelected,
+                ]}
+                activeOpacity={0.7}>
+                <Text
+                  style={[
+                    styles.filterOptionText,
+                    isSelected && styles.filterOptionTextSelected,
+                  ]}>
+                  {option.label}
+                </Text>
+                {isSelected && (
+                  <Icon
+                    name="check-circle"
+                    size={24}
+                    color={theme.colors.primary}
+                  />
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </Sheet.View>
       </Sheet>
     </View>

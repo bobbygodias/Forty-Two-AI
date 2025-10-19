@@ -219,8 +219,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const downloadIcon = isDownloaded
       ? 'delete'
       : modelFile.canFitInStorage
-      ? 'download-outline'
-      : 'download-off-outline';
+        ? 'download-outline'
+        : 'download-off-outline';
 
     const handleWarningPress = () => {
       setShowWarning(true);
@@ -252,7 +252,9 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     };
 
     return (
-      <View style={styles.fileCardContainer}>
+      <View
+        style={styles.fileCardContainer}
+        testID={`model-file-card-${modelFile.rfilename}`}>
         <LinearGradient
           colors={[theme.dark ? HF_YELLOW + '90' : HF_YELLOW, 'transparent']}
           locations={[1, 1]}
@@ -271,7 +273,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                 variant="titleSmall"
                 numberOfLines={1}
                 ellipsizeMode="middle"
-                style={styles.fileName}>
+                style={styles.fileName}
+                testID={`model-file-name-${modelFile.rfilename}`}>
                 {modelFile.rfilename}
               </Text>
               <View style={styles.metadataRow}>
@@ -380,8 +383,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                         isDownloaded
                           ? handleDelete
                           : isDownloading
-                          ? handleCancel
-                          : handleDownload
+                            ? handleCancel
+                            : handleDownload
                       }
                       size={20}
                       animated

@@ -472,12 +472,14 @@ export function hfAsModel(
     modelType: isProjModel
       ? ModelType.PROJECTION
       : isVisionLLM
-      ? ModelType.VISION
-      : undefined,
+        ? ModelType.VISION
+        : undefined,
     compatibleProjectionModels: isVisionLLM
       ? compatibleProjectionModels
       : undefined,
     defaultProjectionModel: isVisionLLM ? defaultProjectionModel : undefined,
+    // Enable vision by default for vision models to ensure projection model downloads
+    visionEnabled: isVisionLLM ? true : undefined,
   };
 
   return _model;
@@ -791,3 +793,4 @@ export * from './multimodalHelpers';
 export * from './network';
 export * from './types';
 export * from './hf';
+export * from './safeAlert';

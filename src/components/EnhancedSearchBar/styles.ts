@@ -48,7 +48,7 @@ export const createStyles = (theme: Theme) =>
       top: '50%',
       transform: [{translateY: -12}],
       padding: 4,
-      zIndex: 1,
+      zIndex: 100,
     },
     filterToggleButton: {
       width: 40,
@@ -113,10 +113,10 @@ export const createStyles = (theme: Theme) =>
       borderColor: theme.colors.outline,
     },
     authorInputContainer: {
-      position: 'relative',
-      marginTop: 16,
-      marginBottom: 40,
-      marginHorizontal: 16,
+      //position: 'relative',
+      // marginTop: 16,
+      // marginBottom: 40,
+      // marginHorizontal: 16,
     },
     authorInput: {
       backgroundColor: theme.colors.surface,
@@ -129,6 +129,10 @@ export const createStyles = (theme: Theme) =>
       minHeight: 40,
       color: theme.colors.onSurface,
     },
+    sheetScrollContent: {
+      paddingHorizontal: 16,
+      paddingBottom: 66,
+    },
     selectorContainer: {
       flex: 1,
     },
@@ -139,7 +143,10 @@ export const createStyles = (theme: Theme) =>
     },
 
     filterSheetContent: {
+      paddingTop: 44,
       paddingBottom: 100,
+      paddingHorizontal: 16,
+      gap: 1,
     },
     filterOption: {
       flexDirection: 'row',
@@ -147,11 +154,23 @@ export const createStyles = (theme: Theme) =>
       justifyContent: 'space-between',
       paddingVertical: 16,
       paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.colors.outline,
+      borderRadius: 12,
+      backgroundColor: 'transparent',
+      minHeight: 56,
+    },
+    filterOptionSelected: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    filterOptionLast: {
+      borderBottomWidth: 0,
     },
     filterOptionText: {
       fontSize: 16,
       color: theme.colors.onSurface,
+      fontWeight: '400',
+    },
+    filterOptionTextSelected: {
+      color: theme.colors.primary,
+      fontWeight: '600',
     },
   });

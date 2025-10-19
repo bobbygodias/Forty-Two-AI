@@ -1,12 +1,17 @@
 import React from 'react';
-import {NativeModules} from 'react-native';
 
 import {cloneDeep} from 'lodash';
 import {LlamaContext} from '@pocketpalai/llama.rn';
 
 import {submitBenchmark} from '../../../api/benchmark';
 
-import {fireEvent, render, waitFor} from '../../../../jest/test-utils';
+import {
+  act,
+  fireEvent,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '../../../../jest/test-utils';
 import {
   mockResult,
   mockSubmittedResult,
@@ -28,6 +33,16 @@ describe('BenchmarkScreen', () => {
       cloneDeep(mockSubmittedResult),
     ];
     jest.clearAllMocks();
+
+    // Reset modelStore state to avoid cross-test leakage
+    modelStore.isContextLoading = false;
+    modelStore.loadingModel = undefined;
+    modelStore.activeModelId = undefined;
+    modelStore.context = undefined;
+
+    // Ensure initContext has a resolved default implementation
+    (modelStore.initContext as jest.Mock).mockReset?.();
+    (modelStore.initContext as jest.Mock).mockResolvedValue(Promise.resolve());
   });
 
   describe('Model Initialization', () => {
@@ -55,13 +70,18 @@ describe('BenchmarkScreen', () => {
       expect(getByTestId('loading-indicator-model-init')).toBeDefined();
 
       // Complete loading
-      modelStore.isContextLoading = false;
-      modelStore.loadingModel = undefined;
+      await act(async () => {
+        modelStore.isContextLoading = false;
+        modelStore.loadingModel = undefined;
+      });
 
       // Verify loading indicator is removed
-      await waitFor(() => {
-        expect(queryByTestId('loading-indicator-model-init')).toBeNull();
-      });
+      await waitFor(
+        () => {
+          expect(queryByTestId('loading-indicator-model-init')).toBeNull();
+        },
+        {timeout: 5000},
+      );
     });
 
     it('should show model selector with available models', () => {
@@ -150,15 +170,7 @@ describe('BenchmarkScreen', () => {
   });
 
   describe('Memory Usage Tracking', () => {
-    beforeAll(() => {
-      // Mock DeviceInfoModule
-      NativeModules.DeviceInfoModule = {
-        getCPUInfo: jest.fn().mockResolvedValue({
-          cores: 8,
-          processors: ['CPU1', 'CPU2', 'CPU3', 'CPU4'],
-        }),
-      };
-    });
+    beforeAll(() => {});
 
     it('should display memory usage in results', async () => {
       const result = {
@@ -286,10 +298,20 @@ describe('BenchmarkScreen', () => {
         expect(submitBenchmark).toHaveBeenCalled();
       });
 
+      await waitForElementToBeRemoved(
+        () => getByTestId('share-benchmark-dialog'),
+        {
+          timeout: 5000,
+        },
+      );
+
       // wait for the dialog to be closed
-      await waitFor(() => {
-        expect(queryByTestId('share-benchmark-dialog')).toBeNull();
-      });
+      await waitFor(
+        () => {
+          expect(queryByTestId('share-benchmark-dialog')).toBeNull();
+        },
+        {timeout: 5000},
+      );
 
       // Verify preference was saved
       expect(uiStore.setBenchmarkShareDialogPreference).toHaveBeenCalledWith(
@@ -337,12 +359,15 @@ describe('BenchmarkScreen', () => {
         expect(submitBenchmark).toHaveBeenCalled();
       });
 
-      benchmarkStore.results = [mockResult, mockSubmittedResult];
+      await act(async () => {
+        benchmarkStore.results = [mockResult, mockSubmittedResult];
+      });
 
       // wait for the dialog to be closed
-      await waitFor(() => {
-        expect(queryByTestId('share-benchmark-dialog')).toBeNull();
-      });
+      await waitForElementToBeRemoved(
+        () => queryByTestId('share-benchmark-dialog'),
+        {timeout: 4000},
+      );
 
       // Since the store is mock we need to manually set the state
       uiStore.benchmarkShareDialog.shouldShow = true;

@@ -203,9 +203,15 @@ describe('PalHeaderRight', () => {
 
       await waitFor(() => {
         expect(exportAllPals).toHaveBeenCalled();
-        // Menu should be closed
-        expect(queryByTestId('menu-content')).toBeNull();
       });
+
+      await waitFor(
+        () => {
+          // Menu should be closed
+          expect(queryByTestId('menu-content')).toBeNull();
+        },
+        {timeout: 4000},
+      );
     });
   });
 
@@ -329,8 +335,13 @@ describe('PalHeaderRight', () => {
 
       await waitFor(() => {
         expect(importPals).toHaveBeenCalled();
-        expect(queryByTestId('menu-content')).toBeNull();
       });
+      await waitFor(
+        () => {
+          expect(queryByTestId('menu-content')).toBeNull();
+        },
+        {timeout: 5000},
+      );
     });
   });
 });

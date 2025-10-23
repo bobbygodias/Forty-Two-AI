@@ -20,6 +20,16 @@
 		9AE3DCE490A24E01AA31653A /* Inter-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AE37F4EB27084262BAE95F85 /* Inter-Light.ttf */; };
 		A81001102E92E09600935976 /* KeepAwakeModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = A810010E2E92E09600935976 /* KeepAwakeModule.mm */; };
 		A81001162E92FFC900935976 /* HardwareInfoModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = A81001152E92FFC900935976 /* HardwareInfoModule.mm */; };
+		A86CF0D42EA57BE100BFFCEE /* LlamaContextWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A86CF0D32EA57BE100BFFCEE /* LlamaContextWrapper.mm */; };
+		A86CF0D62EA9567800BFFCEE /* MustacheRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86CF0D52EA9567800BFFCEE /* MustacheRenderer.swift */; };
+		A8B4FFD32EA5731700CD3B4C /* LlamaInferenceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFCD2EA5731700CD3B4C /* LlamaInferenceEngine.swift */; };
+		A8B4FFD42EA5731700CD3B4C /* AskPalIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFCC2EA5731700CD3B4C /* AskPalIntent.swift */; };
+		A8B4FFD52EA5731700CD3B4C /* PalDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFD02EA5731700CD3B4C /* PalDataProvider.swift */; };
+		A8B4FFD62EA5731700CD3B4C /* PocketPalShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFD22EA5731700CD3B4C /* PocketPalShortcuts.swift */; };
+		A8B4FFD82EA5731700CD3B4C /* OpenPalChatIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFCF2EA5731700CD3B4C /* OpenPalChatIntent.swift */; };
+		A8B4FFD92EA5731700CD3B4C /* PalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFD12EA5731700CD3B4C /* PalEntity.swift */; };
+		A8B4FFDC2EA5736100CD3B4C /* DeepLinkModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFDB2EA5736100CD3B4C /* DeepLinkModule.swift */; };
+		A8B4FFDD2EA5736100CD3B4C /* DeepLinkModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B4FFDA2EA5736100CD3B4C /* DeepLinkModule.m */; };
 		C0270FB5CD74463CA3FF5284 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B033E4AC2D8E41719BF5142F /* Inter-ExtraBold.ttf */; };
 		FF002F1D6D914619BAB71A78 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5BB422A56184C889DB9EAFD /* Inter-SemiBold.ttf */; };
 /* End PBXBuildFile section */
@@ -57,6 +67,17 @@
 		A81001152E92FFC900935976 /* HardwareInfoModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = HardwareInfoModule.mm; path = PocketPal/HardwareInfoModule.mm; sourceTree = "<group>"; };
 		A826FC242E9ECA10003F1572 /* Env.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Env.xcconfig; path = Config/Env.xcconfig; sourceTree = "<group>"; };
 		A826FC2A2E9ECA9B003F1572 /* PocketPalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketPalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A86CF0D22EA57BE100BFFCEE /* LlamaContextWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LlamaContextWrapper.h; path = PocketPal/AppIntents/LlamaContextWrapper.h; sourceTree = "<group>"; };
+		A86CF0D32EA57BE100BFFCEE /* LlamaContextWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = LlamaContextWrapper.mm; path = PocketPal/AppIntents/LlamaContextWrapper.mm; sourceTree = "<group>"; };
+		A86CF0D52EA9567800BFFCEE /* MustacheRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MustacheRenderer.swift; path = PocketPal/AppIntents/MustacheRenderer.swift; sourceTree = "<group>"; };
+		A8B4FFCC2EA5731700CD3B4C /* AskPalIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AskPalIntent.swift; path = PocketPal/AppIntents/AskPalIntent.swift; sourceTree = "<group>"; };
+		A8B4FFCD2EA5731700CD3B4C /* LlamaInferenceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LlamaInferenceEngine.swift; path = PocketPal/AppIntents/LlamaInferenceEngine.swift; sourceTree = "<group>"; };
+		A8B4FFCF2EA5731700CD3B4C /* OpenPalChatIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OpenPalChatIntent.swift; path = PocketPal/AppIntents/OpenPalChatIntent.swift; sourceTree = "<group>"; };
+		A8B4FFD02EA5731700CD3B4C /* PalDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PalDataProvider.swift; path = PocketPal/AppIntents/PalDataProvider.swift; sourceTree = "<group>"; };
+		A8B4FFD12EA5731700CD3B4C /* PalEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PalEntity.swift; path = PocketPal/AppIntents/PalEntity.swift; sourceTree = "<group>"; };
+		A8B4FFD22EA5731700CD3B4C /* PocketPalShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PocketPalShortcuts.swift; path = PocketPal/AppIntents/PocketPalShortcuts.swift; sourceTree = "<group>"; };
+		A8B4FFDA2EA5736100CD3B4C /* DeepLinkModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DeepLinkModule.m; path = PocketPal/DeepLinkModule.m; sourceTree = "<group>"; };
+		A8B4FFDB2EA5736100CD3B4C /* DeepLinkModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DeepLinkModule.swift; path = PocketPal/DeepLinkModule.swift; sourceTree = "<group>"; };
 		AE37F4EB27084262BAE95F85 /* Inter-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Light.ttf"; path = "../src/assets/fonts/Inter-Light.ttf"; sourceTree = "<group>"; };
 		AF5CA2A92F533CE149AE7660 /* Pods-PocketPal-PocketPalTests.profiling.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PocketPal-PocketPalTests.profiling.xcconfig"; path = "Target Support Files/Pods-PocketPal-PocketPalTests/Pods-PocketPal-PocketPalTests.profiling.xcconfig"; sourceTree = "<group>"; };
 		B033E4AC2D8E41719BF5142F /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-ExtraBold.ttf"; path = "../src/assets/fonts/Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -101,6 +122,17 @@
 		13B07FAE1A68108700A75B9A /* PocketPal */ = {
 			isa = PBXGroup;
 			children = (
+				A86CF0D52EA9567800BFFCEE /* MustacheRenderer.swift */,
+				A86CF0D22EA57BE100BFFCEE /* LlamaContextWrapper.h */,
+				A86CF0D32EA57BE100BFFCEE /* LlamaContextWrapper.mm */,
+				A8B4FFDA2EA5736100CD3B4C /* DeepLinkModule.m */,
+				A8B4FFDB2EA5736100CD3B4C /* DeepLinkModule.swift */,
+				A8B4FFCC2EA5731700CD3B4C /* AskPalIntent.swift */,
+				A8B4FFCD2EA5731700CD3B4C /* LlamaInferenceEngine.swift */,
+				A8B4FFCF2EA5731700CD3B4C /* OpenPalChatIntent.swift */,
+				A8B4FFD02EA5731700CD3B4C /* PalDataProvider.swift */,
+				A8B4FFD12EA5731700CD3B4C /* PalEntity.swift */,
+				A8B4FFD22EA5731700CD3B4C /* PocketPalShortcuts.swift */,
 				A81001152E92FFC900935976 /* HardwareInfoModule.mm */,
 				A810010E2E92E09600935976 /* KeepAwakeModule.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -447,6 +479,16 @@
 			files = (
 				A81001102E92E09600935976 /* KeepAwakeModule.mm in Sources */,
 				A81001162E92FFC900935976 /* HardwareInfoModule.mm in Sources */,
+				A86CF0D62EA9567800BFFCEE /* MustacheRenderer.swift in Sources */,
+				A8B4FFD32EA5731700CD3B4C /* LlamaInferenceEngine.swift in Sources */,
+				A8B4FFD42EA5731700CD3B4C /* AskPalIntent.swift in Sources */,
+				A8B4FFDC2EA5736100CD3B4C /* DeepLinkModule.swift in Sources */,
+				A8B4FFDD2EA5736100CD3B4C /* DeepLinkModule.m in Sources */,
+				A86CF0D42EA57BE100BFFCEE /* LlamaContextWrapper.mm in Sources */,
+				A8B4FFD52EA5731700CD3B4C /* PalDataProvider.swift in Sources */,
+				A8B4FFD62EA5731700CD3B4C /* PocketPalShortcuts.swift in Sources */,
+				A8B4FFD82EA5731700CD3B4C /* OpenPalChatIntent.swift in Sources */,
+				A8B4FFD92EA5731700CD3B4C /* PalEntity.swift in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

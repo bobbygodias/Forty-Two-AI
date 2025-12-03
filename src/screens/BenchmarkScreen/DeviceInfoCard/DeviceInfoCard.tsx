@@ -18,6 +18,10 @@ import {
   getGpuInfo,
   getChipsetInfo,
 } from '../../../utils/deviceCapabilities';
+import {
+  getHexagonInfo,
+  type HexagonInfo,
+} from '../../../utils/hexagonDetection';
 
 type Props = {
   onDeviceInfo?: (info: DeviceInfo) => void;
@@ -71,6 +75,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
         }
       | undefined,
   });
+  const [hexagonInfo, setHexagonInfo] = useState<HexagonInfo[]>([]);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -139,6 +144,15 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
 
         setDeviceInfo(newDeviceInfo);
         onDeviceInfo?.(newDeviceInfo);
+
+        // Fetch Hexagon info (only on Android)
+        // Prefer socModel (Android S+) over generic chipset string
+        const socIdentifier = cpuInfo?.socModel || chipset;
+        if (Platform.OS === 'android') {
+          getHexagonInfo(socIdentifier || undefined).then(hexInfo => {
+            setHexagonInfo(hexInfo);
+          });
+        }
       },
     );
   }, [onDeviceInfo]);
@@ -334,6 +348,25 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
                         : l10n.benchmark.deviceInfoCard.instructions.no}
                   </Text>
                 </View>
+              </View>
+            )}
+
+            {/* Hexagon DSP Section */}
+            {Platform.OS === 'android' && hexagonInfo.length > 0 && (
+              <View style={styles.section}>
+                <Text variant="labelSmall" style={styles.sectionTitle}>
+                  {l10n.benchmark.deviceInfoCard.sections.hexagonDetails}
+                </Text>
+                {hexagonInfo.map(info => (
+                  <View key={info.version} style={styles.deviceInfoRow}>
+                    <Text variant="bodySmall" style={styles.deviceInfoValue}>
+                      Hexagon {info.version} | {info.soc}{' '}
+                      {info.supported
+                        ? l10n.benchmark.deviceInfoCard.instructions.yes
+                        : l10n.benchmark.deviceInfoCard.instructions.no}
+                    </Text>
+                  </View>
+                ))}
               </View>
             )}
 

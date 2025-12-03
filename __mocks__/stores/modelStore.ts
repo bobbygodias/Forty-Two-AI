@@ -5,7 +5,7 @@ import {modelsList} from '../../jest/fixtures/models';
 import {downloadManager} from '../services/downloads';
 
 import {Model, ContextInitParams} from '../../src/utils/types';
-import {LlamaContext} from '@pocketpalai/llama.rn';
+import {LlamaContext} from 'llama.rn';
 import {createDefaultContextInitParams} from '../../src/utils/contextInitParamsVersions';
 
 class MockModelStore {
@@ -24,6 +24,8 @@ class MockModelStore {
   setNContext: jest.Mock;
   updateUseAutoRelease: jest.Mock;
   setNoGpuDevices: jest.Mock;
+  setDevices: jest.Mock;
+  setFlashAttnType: jest.Mock;
   setNGPULayers: jest.Mock;
   resetModels: jest.Mock;
   initContext: jest.Mock;
@@ -76,6 +78,8 @@ class MockModelStore {
     this.setNContext = jest.fn();
     this.updateUseAutoRelease = jest.fn();
     this.setNoGpuDevices = jest.fn();
+    this.setDevices = jest.fn();
+    this.setFlashAttnType = jest.fn();
     this.setNGPULayers = jest.fn();
     this.resetModels = jest.fn();
     this.initContext = jest.fn().mockResolvedValue(Promise.resolve());

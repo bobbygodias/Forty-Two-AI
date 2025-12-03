@@ -184,36 +184,53 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
                     '{{layers}}',
                     (result.initSettings.n_gpu_layers || 0).toString(),
                   )}
+                  {(result.initSettings as any).devices &&
+                    (result.initSettings as any).devices.length > 0 && (
+                      <>
+                        {' '}
+                        •{' '}
+                        {l10n.benchmark.benchmarkResultCard.modelSettings.device.replace(
+                          '{{device}}',
+                          (result.initSettings as any).devices.join(', '),
+                        )}
+                      </>
+                    )}
                 </Text>
-                {result.initSettings.flash_attn ? (
-                  <Text style={styles.configText}>
-                    {
-                      l10n.benchmark.benchmarkResultCard.modelSettings
-                        .flashAttentionEnabled
-                    }{' '}
-                    •{' '}
-                    {l10n.benchmark.benchmarkResultCard.modelSettings.cacheTypes
-                      .replace(
-                        '{{cacheK}}',
-                        (
-                          result.initSettings.cache_type_k || 'unknown'
-                        ).toString(),
-                      )
-                      .replace(
-                        '{{cacheV}}',
-                        (
-                          result.initSettings.cache_type_v || 'unknown'
-                        ).toString(),
-                      )}
-                  </Text>
-                ) : (
-                  <Text style={styles.configText}>
-                    {
-                      l10n.benchmark.benchmarkResultCard.modelSettings
-                        .flashAttentionDisabled
+                <Text style={styles.configText}>
+                  {/* Flash Attention Type */}
+                  {(() => {
+                    // Handle both legacy flash_attn (boolean) and new flash_attn_type (string)
+                    const flashAttnType =
+                      (result.initSettings as any).flash_attn_type ??
+                      ((result.initSettings as any).flash_attn ? 'on' : 'off');
+
+                    if (flashAttnType === 'off') {
+                      return l10n.benchmark.benchmarkResultCard.modelSettings
+                        .flashAttentionDisabled;
+                    } else if (flashAttnType === 'on') {
+                      return l10n.benchmark.benchmarkResultCard.modelSettings
+                        .flashAttentionEnabled;
+                    } else {
+                      // 'auto'
+                      return l10n.benchmark.benchmarkResultCard.modelSettings
+                        .flashAttentionEnabled;
                     }
-                  </Text>
-                )}
+                  })()}{' '}
+                  •{' '}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.cacheTypes
+                    .replace(
+                      '{{cacheK}}',
+                      (
+                        result.initSettings.cache_type_k || 'unknown'
+                      ).toString(),
+                    )
+                    .replace(
+                      '{{cacheV}}',
+                      (
+                        result.initSettings.cache_type_v || 'unknown'
+                      ).toString(),
+                    )}
+                </Text>
               </View>
             </View>
           )}

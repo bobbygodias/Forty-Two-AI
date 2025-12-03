@@ -52,6 +52,13 @@ export const l10n = {
         'Note: Pure Q4_0 quantized models perform best with OpenCL.',
       openCLDocsLink: 'See llama.cpp OpenCL docs for details.',
       layersOnGPU: 'Layers on GPU: {{gpuLayers}}',
+      // Device Selection
+      deviceSelection: 'Device Selection',
+      deviceSelectionIOS: 'Device (Metal)',
+      deviceSelectionIOSDescription: 'Choose Metal GPU or CPU-only mode',
+      deviceSelectionAndroidDescription:
+        'Select compute device (CPU, GPU, or Hexagon NPU)',
+      cpuOnlyNoAccelerators: 'CPU only - No hardware accelerators detected',
       // Context Size
       contextSize: 'Context Size',
       contextSizePlaceholder: 'Enter context size (min {{minContextSize}})',
@@ -75,6 +82,13 @@ export const l10n = {
       // Flash Attention
       flashAttention: 'Flash Attention',
       flashAttentionDescription: 'Enable Flash Attention for faster processing',
+      flashAttentionIOSDescription:
+        'Memory-efficient attention (auto-enabled on Metal)',
+      flashAttentionAndroidDescription:
+        'Must be disabled for OpenCL state save/load',
+      flashAttentionAuto: 'Auto',
+      flashAttentionOn: 'On',
+      flashAttentionOff: 'Off',
       // Cache Type K
       keyCacheType: 'Key Cache Type',
       keyCacheTypeDescription: 'Select the cache type for key computation',
@@ -1177,6 +1191,7 @@ export const l10n = {
           ubatch: 'UBatch: {{ubatch}}',
           cpuThreads: 'CPU Threads: {{threads}}',
           gpuLayers: 'GPU Layers: {{layers}}',
+          device: 'Device: {{device}}',
           flashAttentionEnabled: 'Flash Attention Enabled',
           flashAttentionDisabled: 'Flash Attention Disabled',
           cacheTypes: 'Cache Types: {{cacheK}}/{{cacheV}}',
@@ -1213,6 +1228,7 @@ export const l10n = {
           basicInfo: 'Basic Info',
           cpuDetails: 'CPU Details',
           gpuDetails: 'GPU Details',
+          hexagonDetails: 'Hexagon DSP',
           appInfo: 'App Info',
         },
         fields: {
@@ -1324,6 +1340,14 @@ export const l10n = {
         '注：純粋なQ4_0量子化モデルがOpenCLで最高のパフォーマンスを発揮します。',
       openCLDocsLink: '詳細はllama.cpp OpenCLドキュメントをご覧ください。',
       layersOnGPU: 'GPUレイヤー：{{gpuLayers}}',
+      // Device Selection
+      deviceSelection: 'デバイス選択',
+      deviceSelectionIOS: 'デバイス（Metal）',
+      deviceSelectionIOSDescription: 'Metal GPUまたはCPUのみモードを選択',
+      deviceSelectionAndroidDescription:
+        '計算デバイスを選択（CPU、GPU、またはHexagon NPU）',
+      cpuOnlyNoAccelerators:
+        'CPUのみ - ハードウェアアクセラレータが検出されませんでした',
       // Context Size
       contextSize: 'コンテキストサイズ',
       contextSizePlaceholder:
@@ -1348,6 +1372,13 @@ export const l10n = {
       // Flash Attention
       flashAttention: 'Flash Attention',
       flashAttentionDescription: '高速処理のためのFlash Attentionを有効化',
+      flashAttentionIOSDescription:
+        'メモリ効率的なアテンション（Metalで自動有効化）',
+      flashAttentionAndroidDescription:
+        'OpenCL状態の保存/読み込みには無効化が必要',
+      flashAttentionAuto: '自動',
+      flashAttentionOn: 'オン',
+      flashAttentionOff: 'オフ',
       // Cache Type K
       keyCacheType: 'キーキャッシュタイプ',
       keyCacheTypeDescription: 'キー計算用のキャッシュタイプを選択',
@@ -2453,6 +2484,7 @@ export const l10n = {
           ubatch: 'Uバッチ: {{ubatch}}',
           cpuThreads: 'CPUスレッド: {{threads}}',
           gpuLayers: 'GPUレイヤー: {{layers}}',
+          device: 'デバイス: {{device}}',
           flashAttentionEnabled: 'Flash Attention 有効',
           flashAttentionDisabled: 'Flash Attention 無効',
           cacheTypes: 'キャッシュタイプ: {{cacheK}}/{{cacheV}}',
@@ -2489,6 +2521,7 @@ export const l10n = {
           basicInfo: '基本情報',
           cpuDetails: 'CPU詳細',
           gpuDetails: 'GPU詳細',
+          hexagonDetails: 'Hexagon DSP',
           appInfo: 'アプリ情報',
         },
         fields: {
@@ -2601,6 +2634,13 @@ export const l10n = {
       openCLQuantizationNote: '注意：纯Q4_0量化模型在OpenCL上性能最佳。',
       openCLDocsLink: '详情请参阅llama.cpp OpenCL文档。',
       layersOnGPU: 'GPU层数：{{gpuLayers}}',
+      // Device Selection
+      deviceSelection: '设备选择',
+      deviceSelectionIOS: '设备（Metal）',
+      deviceSelectionIOSDescription: '选择Metal GPU或仅CPU模式',
+      deviceSelectionAndroidDescription:
+        '选择计算设备（CPU、GPU或Hexagon NPU）',
+      cpuOnlyNoAccelerators: '仅CPU - 未检测到硬件加速器',
       // Context Size
       contextSize: '上下文长度',
       contextSizePlaceholder: '输入上下文长度（最小{{minContextSize}}）',
@@ -2623,6 +2663,11 @@ export const l10n = {
       // Flash Attention
       flashAttention: 'Flash Attention',
       flashAttentionDescription: '启用Flash Attention以加快处理速度',
+      flashAttentionIOSDescription: '内存高效注意力（Metal上自动启用）',
+      flashAttentionAndroidDescription: 'OpenCL状态保存/加载必须禁用',
+      flashAttentionAuto: '自动',
+      flashAttentionOn: '开启',
+      flashAttentionOff: '关闭',
       // Cache Type K
       keyCacheType: '键缓存类型',
       keyCacheTypeDescription: '选择键计算的缓存类型',
@@ -3661,6 +3706,7 @@ export const l10n = {
           ubatch: 'U批处理: {{ubatch}}',
           cpuThreads: 'CPU线程: {{threads}}',
           gpuLayers: 'GPU层数: {{layers}}',
+          device: '设备: {{device}}',
           flashAttentionEnabled: '启用Flash Attention',
           flashAttentionDisabled: '禁用Flash Attention',
           cacheTypes: '缓存类型: {{cacheK}}/{{cacheV}}',
@@ -3697,6 +3743,7 @@ export const l10n = {
           basicInfo: '基本信息',
           cpuDetails: 'CPU详细信息',
           gpuDetails: 'GPU详细信息',
+          hexagonDetails: 'Hexagon DSP',
           appInfo: 'APP信息',
         },
         fields: {

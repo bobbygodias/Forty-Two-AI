@@ -1,6 +1,6 @@
 jest.unmock('../../store');
 import {runInAction} from 'mobx';
-import {LlamaContext} from '@pocketpalai/llama.rn';
+import {LlamaContext} from 'llama.rn';
 import {Alert} from 'react-native';
 
 import {defaultModels} from '../defaultModels';
@@ -10,7 +10,7 @@ import {downloadManager} from '../../services/downloads';
 import {ModelOrigin, ModelType} from '../../utils/types';
 import {
   basicModel,
-  mockContextModel,
+  mockLlamaContextParams,
   mockHFModel1,
 } from '../../../jest/fixtures/models';
 import * as RNFS from '@dr.pogodin/react-native-fs';
@@ -219,12 +219,7 @@ describe('ModelStore', () => {
         isDownloaded: true,
       };
 
-      modelStore.context = new LlamaContext({
-        contextId: 1,
-        gpu: false,
-        reasonNoGPU: '',
-        model: mockContextModel,
-      });
+      modelStore.context = new LlamaContext(mockLlamaContextParams);
       modelStore.models = [projModel];
       modelStore.activeProjectionModelId = projModel.id;
 
@@ -607,14 +602,9 @@ describe('ModelStore', () => {
       modelStore.wasAutoReleased = true;
       modelStore.lastAutoReleasedModelId = model.id;
 
-      const mockInitContext = jest.fn().mockResolvedValue(
-        new LlamaContext({
-          contextId: 1,
-          gpu: false,
-          reasonNoGPU: '',
-          model: mockContextModel,
-        }),
-      );
+      const mockInitContext = jest
+        .fn()
+        .mockResolvedValue(new LlamaContext(mockLlamaContextParams));
       modelStore.initContext = mockInitContext;
 
       // Simulate coming to foreground
@@ -993,37 +983,41 @@ describe('ModelStore', () => {
     });
 
     it('should set flash attention and reset cache types when disabled', () => {
-      // Enable flash attention first
-      modelStore.setFlashAttn(true);
-      expect(modelStore.contextInitParams.flash_attn).toBe(true);
+      // Enable flash attention first, and change cache types
+      modelStore.setFlashAttnType('on' as any);
+      expect(modelStore.contextInitParams.flash_attn_type).toBe('on');
+      modelStore.setCacheTypeK('q8_0' as any);
+      modelStore.setCacheTypeV('q8_0' as any);
+      expect(modelStore.contextInitParams.cache_type_k).toBe('q8_0');
+      expect(modelStore.contextInitParams.cache_type_v).toBe('q8_0');
 
       // Disable flash attention - should reset cache types
-      modelStore.setFlashAttn(false);
-      expect(modelStore.contextInitParams.flash_attn).toBe(false);
+      modelStore.setFlashAttnType('off' as any);
+      expect(modelStore.contextInitParams.flash_attn_type).toBe('off');
       expect(modelStore.contextInitParams.cache_type_k).toBe('f16');
       expect(modelStore.contextInitParams.cache_type_v).toBe('f16');
     });
 
     it('should set cache type K only when flash attention is enabled', () => {
       // Disable flash attention
-      modelStore.setFlashAttn(false);
+      modelStore.setFlashAttnType('off' as any);
       modelStore.setCacheTypeK('q8_0' as any);
       expect(modelStore.contextInitParams.cache_type_k).toBe('f16'); // Should not change
 
       // Enable flash attention
-      modelStore.setFlashAttn(true);
+      modelStore.setFlashAttnType('on' as any);
       modelStore.setCacheTypeK('q8_0' as any);
       expect(modelStore.contextInitParams.cache_type_k).toBe('q8_0'); // Should change
     });
 
     it('should set cache type V only when flash attention is enabled', () => {
       // Disable flash attention
-      modelStore.setFlashAttn(false);
+      modelStore.setFlashAttnType('off' as any);
       modelStore.setCacheTypeV('q8_0' as any);
       expect(modelStore.contextInitParams.cache_type_v).toBe('f16'); // Should not change
 
       // Enable flash attention
-      modelStore.setFlashAttn(true);
+      modelStore.setFlashAttnType('on' as any);
       modelStore.setCacheTypeV('q8_0' as any);
       expect(modelStore.contextInitParams.cache_type_v).toBe('q8_0'); // Should change
     });
@@ -1071,7 +1065,7 @@ describe('ModelStore', () => {
       modelStore.setNBatch(1024);
       modelStore.setNUBatch(512);
       modelStore.setNThreads(8);
-      modelStore.setFlashAttn(true);
+      modelStore.setFlashAttnType('on' as any);
       modelStore.contextInitParams = {
         ...modelStore.contextInitParams,
         no_gpu_devices: false,
@@ -1084,9 +1078,8 @@ describe('ModelStore', () => {
       expect(effective.n_batch).toBe(1024);
       expect(effective.n_ubatch).toBe(512);
       expect(effective.n_threads).toBe(8);
-      expect(effective.flash_attn).toBe(true);
+      expect(effective.flash_attn_type).toBe('on');
       expect(effective.n_gpu_layers).toBe(32);
-      expect(effective.no_gpu_devices).toBe(false);
       expect(effective.use_mlock).toBe(false);
       expect(effective.use_mmap).toBe(true); // Should be boolean for llama.rn compatibility
     });

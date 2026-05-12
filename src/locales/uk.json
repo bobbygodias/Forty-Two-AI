@@ -154,7 +154,10 @@
     "removeRemoteModel": "Вилучити {{modelName}} ({{serverName}})?",
     "retryConnection": "Спробувати ще раз",
     "enterUrlManually": "Введіть URL-адресу вручну",
-    "manageServers": "Управління серверами"
+    "manageServers": "Управління серверами",
+    "ttsAvailability": "Перетворення тексту в мову",
+    "ttsAvailabilityDescription": "Прочитайте відповіді помічника вголос.",
+    "ttsAvailabilityLowMemoryWarning": "У вашому пристрої мало пам'яті — програма може працювати нестабільно."
   },
   "memory": {
     "shortWarning": "Попередження про пам'ять",
@@ -1225,17 +1228,17 @@
     "previewButton": "Попередній перегляд",
     "stopPreviewButton": "Зупинити попередній перегляд",
     "voicesTitle": "Голоси",
-    "voicesEmptyHint": "Торкніться будь-якого голосу, щоб встановити та використовувати його. Або виберіть системний голос — вони завжди доступні.",
+    "voicesEmptyHint": "Натисніть на будь-який голос, щоб встановити його та почати користуватися. Або виберіть системний голос — вони завжди доступні.",
     "supertonicStepsLabel": "Якість (дифузійні кроки)",
-    "toggleAutoSpeakLabel": "Перемкнути автоматичне озвучення",
+    "toggleAutoSpeakLabel": "Увімкнути/вимкнути автоматичне читання",
     "openSettingsLabel": "Налаштування TTS",
     "playMessageLabel": "Відтворити повідомлення",
     "stopMessageLabel": "Зупинити повідомлення",
-    "autoSpeakLabel": "Автоматично озвучувати відповіді",
+    "autoSpeakLabel": "Автоматичні відповіді",
     "autoSpeakDescription": "Читайте нові відповіді вголос, коли вони прибувають.",
-    "engineChipKitten": "Kitten",
-    "engineChipKokoro": "Kokoro",
-    "engineChipSupertonic": "Supertonic",
+    "engineChipKitten": "Кошеня",
+    "engineChipKokoro": "Кокоро",
+    "engineChipSupertonic": "Супертонік",
     "engineChipSystem": "Система",
     "stepsCount": "{{steps}} кроки",
     "engineKittenTagline": "Найменший слід. Надійно. Найкраще на старих пристроях.",
@@ -1248,10 +1251,10 @@
     "engineTierLightest": "найлегший",
     "engineTierBestQuality": "найкраща якість",
     "engineTierFastestStart": "найшвидший старт",
-    "engineSpecsLine": "{{voices}} голосів · {{sizeMb}} МБ · ~{{ramMb}} МБ оперативної пам'яті",
+    "engineSpecsLine": "{{voices}} голосів  ·  {{sizeMb}} МБ  ·  ~{{ramMb}} МБ оперативної пам'яті",
     "engineSystemSpecsLine": "{{voices}} голоси",
     "engineRemoveTitle": "Вилучити {{engineTitle}}?",
-    "engineRemoveBody": "Звільнить ~{{sizeMb}} МБ на цьому пристрої.",
+    "engineRemoveBody": "Звільняє ~{{sizeMb}} МБ на цьому пристрої.",
     "engineRemoveCancel": "Скасувати",
     "engineRemoveConfirm": "Вилучити",
     "engineInstallCta": "Встановити · {{sizeMb}} MB",
@@ -1259,6 +1262,6 @@
     "engineRetryCta": "Спробуйте ще раз",
     "voicesEmptyState": "Голосів не знайдено.",
     "kokoroDeviceNote": "Деякі голоси можуть працювати не на всіх пристроях.",
-    "insufficientStorage": "Недостатньо місця — звільніть {{requiredMb}} МБ, щоб встановити цей рушій ({{freeMb}} МБ доступно)."
+    "insufficientStorage": "Недостатньо місця — для встановлення цього движка потрібно звільнити {{requiredMb}} МБ (доступно {{freeMb}} МБ)."
   }
 }

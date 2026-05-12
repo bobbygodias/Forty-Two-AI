@@ -646,7 +646,7 @@
   },
   "feedback": {
     "title": "送出反饋",
-    "description": "您的語音很重要！告訴我們 PocketPal AI 如何幫助您，以及我們可以做什麼讓它更有用。",
+    "description": "您的聲音很重要！告訴我們 PocketPal AI 如何幫助您，以及我們可以做什麼讓它更有用。",
     "shareThoughtsButton": "分享您的想法",
     "useCase": {
       "label": "您正在使用 PocketPal AI 做什麼？",
@@ -1233,7 +1233,7 @@
     "stopMessageLabel": "停止訊息",
     "autoSpeakLabel": "自動朗讀回應",
     "autoSpeakDescription": "收到新回覆時，自動朗讀。",
-    "engineChipKitten": "小貓",
+    "engineChipKitten": "Kitten",
     "engineChipKokoro": "Kokoro",
     "engineChipSupertonic": "Supertonic",
     "engineChipSystem": "系統",

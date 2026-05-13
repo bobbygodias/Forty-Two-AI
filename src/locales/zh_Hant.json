@@ -646,7 +646,7 @@
   },
   "feedback": {
     "title": "送出反饋",
-    "description": "您的聲音很重要！告訴我們 PocketPal AI 如何幫助您，以及我們可以做什麼讓它更有用。",
+    "description": "您的意見對我們非常重要！請告訴我們 PocketPal AI 如何對您有所幫助，以及我們還可以做些什麼來讓它變得更好用。",
     "shareThoughtsButton": "分享您的想法",
     "useCase": {
       "label": "您正在使用 PocketPal AI 做什麼？",
@@ -1058,7 +1058,10 @@
     "removeRemoteModel": "移除 {{modelName}} ({{serverName}})？",
     "retryConnection": "重試",
     "enterUrlManually": "手動輸入網址",
-    "manageServers": "管理伺服器"
+    "manageServers": "管理伺服器",
+    "ttsAvailability": "文字轉語音",
+    "ttsAvailabilityDescription": "朗讀助理回覆。",
+    "ttsAvailabilityLowMemoryWarning": "您的裝置記憶體不足 — 這可能會影響功能運作的穩定性。"
   },
   "storage": {
     "checkFailed": "無法檢查存儲",
@@ -1219,7 +1222,7 @@
     }
   },
   "voiceAndSpeech": {
-    "sectionTitle": "語音與說話功能",
+    "sectionTitle": "語音功能",
     "voiceRowTitle": "語音",
     "notSet": "尚未設定",
     "previewButton": "預覽",
@@ -1245,10 +1248,10 @@
     "engineSystemTitleIos": "iOS 語音",
     "engineSystemTitleAndroid": "Android 語音",
     "engineSystemTier": "隨時可用",
-    "engineTierLightest": "最輕量化",
+    "engineTierLightest": "最輕量",
     "engineTierBestQuality": "最佳品質",
     "engineTierFastestStart": "最快啟動",
-    "engineSpecsLine": "{{voices}} 種語音  ·  {{sizeMb}} MB  ·  ~ 約 {{ramMb}} MB RAM",
+    "engineSpecsLine": "{{voices}} 種聲音  ·  {{sizeMb}} MB  ·  約 {{ramMb}} MB RAM",
     "engineSystemSpecsLine": "{{voices}} 種語音",
     "engineRemoveTitle": "移除 {{engineTitle}}？",
     "engineRemoveBody": "可釋放約 {{sizeMb}} MB 的裝置空間。",

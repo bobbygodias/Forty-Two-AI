@@ -1234,7 +1234,7 @@
     "openSettingsLabel": "Налаштування TTS",
     "playMessageLabel": "Відтворити повідомлення",
     "stopMessageLabel": "Зупинити повідомлення",
-    "autoSpeakLabel": "Автоматичні відповіді",
+    "autoSpeakLabel": "Автоматично озвучувати відповіді",
     "autoSpeakDescription": "Читайте нові відповіді вголос, коли вони прибувають.",
     "engineChipKitten": "Кошеня",
     "engineChipKokoro": "Кокоро",

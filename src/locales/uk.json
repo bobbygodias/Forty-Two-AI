@@ -50,7 +50,7 @@
     "deviceSelectionIOSDescription": "Виберіть режим «Metal GPU» або «Тільки CPU»",
     "deviceSelectionAndroidDescription": "Виберіть обчислювальний пристрій (CPU, GPU або Hexagon NPU)",
     "cpuOnlyNoAccelerators": "Тільки процесор — апаратні прискорювачі не виявлено",
-    "contextSize": "Розмір контексту",
+    "contextSize": "Розмір Контексту",
     "contextSizePlaceholder": "Введіть розмір контексту (мін. {{minContextSize}})",
     "invalidContextSizeError": "Введіть дійсний номер (мінімум {{minContextSize}})",
     "modelReloadNotice": "Щоб зміни набули чинності, потрібно перезавантажити модель.",
@@ -551,7 +551,7 @@
       "activateModelButton": "Вибрати модель",
       "loading": "Завантаження...",
       "gettingReadyTitle": "{{name}} готується",
-      "gettingReadyDescription": "Ми повідомимо, щойно ваш приятель буде готовий до спілкування. Натисніть банер угорі, щоб побачити, як справи."
+      "gettingReadyDescription": "Ми повідомимо вас, щойно ваш друг зможе почати чат. Натисніть на банер у верхній частині екрана, щоб дізнатися, як просуваються справи."
     },
     "chatInput": {
       "inputPlaceholder": "Повідомлення",
@@ -1469,7 +1469,7 @@
         "coding": "Програмування",
         "education": "Навчання",
         "roleplay": "Рольова гра",
-        "creative_writing": "Творче письмо",
+        "creative_writing": "Творче Письмо",
         "else": "Шукаєте щось інше?"
       },
       "topicDescription": {

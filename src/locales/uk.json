@@ -50,7 +50,7 @@
     "deviceSelectionIOSDescription": "Виберіть режим «Metal GPU» або «Тільки CPU»",
     "deviceSelectionAndroidDescription": "Виберіть обчислювальний пристрій (CPU, GPU або Hexagon NPU)",
     "cpuOnlyNoAccelerators": "Тільки процесор — апаратні прискорювачі не виявлено",
-    "contextSize": "Розмір Контексту",
+    "contextSize": "Розмір контексту",
     "contextSizePlaceholder": "Введіть розмір контексту (мін. {{minContextSize}})",
     "invalidContextSizeError": "Введіть дійсний номер (мінімум {{minContextSize}})",
     "modelReloadNotice": "Щоб зміни набули чинності, потрібно перезавантажити модель.",
@@ -1469,7 +1469,7 @@
         "coding": "Програмування",
         "education": "Навчання",
         "roleplay": "Рольова гра",
-        "creative_writing": "Творче Письмо",
+        "creative_writing": "Творче письмо",
         "else": "Шукаєте щось інше?"
       },
       "topicDescription": {

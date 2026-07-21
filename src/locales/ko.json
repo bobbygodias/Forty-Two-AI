@@ -199,7 +199,17 @@
     "increaseContextReloading": "더 큰 컨텍스트로 모델을 다시 불러오는 중…",
     "increaseContextSuccess": "컨텍스트가 {{target}} 토큰으로 늘어났습니다.",
     "increaseContextFailure": "컨텍스트 크기를 늘릴 수 없습니다. 이전 설정으로 복원되었습니다.",
-    "palLoadHint": "이 Pal은 현재 컨텍스트 크기보다 더 많은 공간이 필요한 편입니다."
+    "palLoadHint": "이 Pal은 현재 컨텍스트 크기보다 더 많은 공간이 필요한 편입니다.",
+    "webSearch": {
+      "searched": "검색함: {{query}}",
+      "noResults": "결과 없음",
+      "noResultsFor": "{{query}}에 대한 결과 없음",
+      "resultsCount": "{{count}}개 결과",
+      "resultsCountOne": "결과 1개",
+      "searchResultsTitle": "검색 결과",
+      "showResultsAccessibilityLabel": "{{query}}에 대한 웹 검색 결과 표시",
+      "openLinkError": "이 링크를 열 수 없어요."
+    }
   },
   "common": {
     "cancel": "취소",
@@ -673,12 +683,16 @@
       "talentNames": {
         "render_html": "HTML 미리보기",
         "calculate": "수학 표현식",
-        "datetime": "날짜와 시간"
+        "datetime": "날짜와 시간",
+        "web_search": "웹 검색",
+        "read_url": "웹 페이지 읽기"
       },
       "talentDescriptions": {
         "render_html": "채팅 내 HTML 문서 인라인 렌더링",
         "calculate": "수학 표현식 계산",
-        "datetime": "현재 날짜와 시간 가져오기"
+        "datetime": "현재 날짜와 시간 가져오기",
+        "web_search": "최신 정보를 인터넷에서 검색 (설정에서 API 키 필요)",
+        "read_url": "웹 페이지의 전체 내용 읽기 (설정에서 API 키 필요)"
       },
       "greeting": {
         "removePromptLabel": "프롬프트 제거",
@@ -1169,7 +1183,32 @@
     "requestTimeoutHelp": "서버 응답을 기다리는 최대 시간입니다. 비워 두면 기본값이 적용됩니다.",
     "requestTimeoutPlaceholder": "선택 사항 - 비워 두면 기본값 적용",
     "serverType": "서버 유형",
-    "serverTypeHelp": "자동으로 감지돼요. 잘못된 경우 변경해 주세요."
+    "serverTypeHelp": "자동으로 감지돼요. 잘못된 경우 변경해 주세요.",
+    "internetSearch": {
+      "title": "인터넷 검색",
+      "description": "Pals가 자체 도구로 웹을 검색하도록 해줘요. API 키는 직접 준비하세요 — PocketPal은 여러분의 키를 보관하거나 검색어를 중계하지 않아요.",
+      "providerLabel": "검색 제공자",
+      "providerGated": "출시 예정",
+      "keyLabel": "API 키",
+      "keyIsSet": "{{provider}}에 키가 설정되어 있어요.",
+      "keyNotSet": "{{provider}}에 설정된 키가 없어요.",
+      "setKeyButton": "키 설정",
+      "updateKeyButton": "키 업데이트",
+      "clearKeyButton": "키 삭제",
+      "keyInputPlaceholder": "{{provider}} API 키를 붙여넣으세요",
+      "keyUpdateError": "키를 업데이트하지 못했어요. 다시 시도해 주세요.",
+      "showKeyAccessibilityLabel": "API 키 표시",
+      "hideKeyAccessibilityLabel": "API 키 숨기기",
+      "resultCountLabel": "검색당 결과 수",
+      "resultCountDescription": "결과가 적을수록 모델의 컨텍스트에 공간이 더 많이 남아요.",
+      "consentTitle": "검색어가 기기 밖으로 전송돼요",
+      "consentDescription": "Pal이 웹을 검색하면 여러분의 검색어가 인터넷을 통해 선택한 제공자로 전송돼요. Pal이 페이지를 읽을 때, 선택한 제공자에 자체 리더가 없으면 URL과 페이지 내용이 대신 기본 리더 서비스(r.jina.ai)로 전송될 수 있어요. 키와 검색어는 절대 PocketPal로 전송되지 않아요.",
+      "consentAccept": "이해했어요",
+      "consentRequired": "키를 설정하고 검색을 활성화하려면 위 고지에 동의해 주세요.",
+      "consentGivenTitle": "웹 검색이 활성화되었어요",
+      "consentGivenDescription": "위에서 설명한 대로 검색어와 페이지 읽기가 기기 밖으로 전송될 수 있어요.",
+      "consentRevoke": "동의 철회"
+    }
   },
   "storage": {
     "checkFailed": "저장공간 확인 실패",

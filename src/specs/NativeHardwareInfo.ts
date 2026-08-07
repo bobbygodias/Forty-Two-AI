@@ -51,8 +51,8 @@ export interface VulkanInfo {
   maxStorageBufferRange?: number;
   maxComputeSharedMemorySize?: number;
   maxComputeWorkGroupInvocations?: number;
-  maxComputeWorkGroupCount?: [number, number, number];
-  maxComputeWorkGroupSize?: [number, number, number];
+  maxComputeWorkGroupCount?: number[];
+  maxComputeWorkGroupSize?: number[];
   memoryHeapBytes?: number;
   deviceLocalHeapBytes?: number;
   unifiedMemory?: boolean;

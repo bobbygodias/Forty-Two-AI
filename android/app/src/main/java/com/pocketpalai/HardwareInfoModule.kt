@@ -21,11 +21,12 @@ import org.json.JSONObject
 class HardwareInfoModule(reactContext: ReactApplicationContext) :
     NativeHardwareInfoSpec(reactContext) {
 
-  // The JNI implementation lives in jni/src/hardware_info.cpp; our
-  // CMakeLists.txt links it into libappmodules.so, which SoLoader has
-  // already mapped by the time this is called. No System.loadLibrary
+  // The JNI implementations live in jni/src/hardware_info.cpp; our
+  // CMakeLists.txt links them into libappmodules.so, which SoLoader has
+  // already mapped by the time these are called. No System.loadLibrary
   // needed.
   private external fun nativePurgeAll(): Boolean
+  private external fun nativeGetVulkanInfoJson(): String
 
   override fun getName(): String = NativeHardwareInfoSpec.NAME
 
@@ -136,6 +137,25 @@ class HardwareInfoModule(reactContext: ReactApplicationContext) :
       gpuInfo.putString("gpuType", gpuType)
 
       promise.resolve(gpuInfo)
+    } catch (e: Exception) {
+      promise.reject("ERROR", e.message)
+    }
+  }
+
+  // The NDK probe deliberately returns JSON. That keeps Vulkan and its nested
+  // arrays independent of React Native bridge types and makes the probe useful
+  // from non-RN native tests later.
+  override fun getVulkanInfo(promise: Promise) {
+    try {
+      val json = try {
+        nativeGetVulkanInfoJson()
+      } catch (e: Throwable) {
+        JSONObject().apply {
+          put("available", false)
+          put("error", e.message ?: e.javaClass.simpleName)
+        }.toString()
+      }
+      promise.resolve(json)
     } catch (e: Exception) {
       promise.reject("ERROR", e.message)
     }
@@ -335,4 +355,3 @@ class HardwareInfoModule(reactContext: ReactApplicationContext) :
     }
   }
 }
-

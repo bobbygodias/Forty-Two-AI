@@ -1,4 +1,5 @@
 import {makeAutoObservable, runInAction} from 'mobx';
+import {Platform} from 'react-native';
 import type {NativeBackendDeviceInfo} from 'llama.rn';
 
 import NativeHardwareInfo, {
@@ -159,9 +160,7 @@ class EnterpriseRuntimeStore {
     return (
       requested.n_gpu_layers !== active.n_gpu_layers ||
       requestedDevices.length !== activeDevices.length ||
-      requestedDevices.some(
-        (device, index) => device !== activeDevices[index],
-      )
+      requestedDevices.some((device, index) => device !== activeDevices[index])
     );
   }
 
@@ -184,6 +183,15 @@ class EnterpriseRuntimeStore {
     }
 
     modelStore.setDevices([gpuDeviceName]);
+
+    // The stock Android GPU path exposed by llama.rn 0.12.7 is OpenCL,
+    // whose device option only supports flash attention disabled. Keep this
+    // normalization beside backend selection so model reload cannot receive
+    // an invalid OpenCL + flash-attention combination. The Vulkan fork will
+    // replace this with backend-reported capabilities.
+    if (Platform.OS === 'android') {
+      modelStore.setFlashAttnType('off');
+    }
 
     if (backend === 'hybrid') {
       const totalLayers = modelStore.activeModel?.ggufMetadata?.n_layers;

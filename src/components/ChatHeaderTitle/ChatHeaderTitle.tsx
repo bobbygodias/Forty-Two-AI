@@ -47,10 +47,7 @@ export const ChatHeaderTitle: React.FC = observer(() => {
       </Text>
       <View style={styles.subtitleRow}>
         <View style={styles.onlineDot} />
-        <Text
-          numberOfLines={1}
-          variant="bodySmall"
-          style={styles.subtitle}>
+        <Text numberOfLines={1} variant="bodySmall" style={styles.subtitle}>
           {modelLabel} · {executionLabel}
         </Text>
       </View>

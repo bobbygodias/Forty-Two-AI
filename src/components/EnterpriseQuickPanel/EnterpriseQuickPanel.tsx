@@ -120,7 +120,11 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
 
     setIsApplying(true);
     try {
-      await modelStore.reinitializeContext();
+      // A backend change must create a genuinely new native context.
+      // reinitializeContext() currently short-circuits when the same model is
+      // already active, so release first and then initialize explicitly.
+      await modelStore.releaseContext();
+      await modelStore.initContext(activeModel);
       await enterpriseRuntimeStore.refresh();
     } catch (error) {
       console.error('[EnterpriseQuickPanel] Failed to reload model:', error);
@@ -142,11 +146,7 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
         accessibilityRole="button"
         accessibilityLabel="Abrir painel rápido da Enterprise"
         onPress={() => setVisible(true)}
-        style={({pressed}) => [
-          styles.statusPill,
-          pressed && styles.pressed,
-        ]}>
-        {/* eslint-disable-next-line react-native/no-inline-styles */}
+        style={({pressed}) => [styles.statusPill, pressed && styles.pressed]}>
         <View style={[styles.statusDot, {backgroundColor: statusColor}]} />
         {!compactHeader ? (
           <Text numberOfLines={1} style={styles.statusText}>
@@ -199,12 +199,8 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
                     </Text>
                   </View>
                   <View style={styles.backendBadge}>
-                    {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View
-                      style={[
-                        styles.statusDot,
-                        {backgroundColor: statusColor},
-                      ]}
+                      style={[styles.statusDot, {backgroundColor: statusColor}]}
                     />
                     <Text variant="labelMedium">
                       {effectiveBackendLabels[effectiveBackend]}
@@ -280,7 +276,9 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
                       <Text
                         variant="labelLarge"
                         style={
-                          selected ? styles.backendOptionSelectedText : undefined
+                          selected
+                            ? styles.backendOptionSelectedText
+                            : undefined
                         }>
                         {requestedBackendLabels[option.id]}
                       </Text>
@@ -299,11 +297,7 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
 
               <Surface style={styles.diagnosticCard} elevation={0}>
                 <View style={styles.diagnosticTitleRow}>
-                  <Icon
-                    name="chip"
-                    size={22}
-                    color={theme.colors.primary}
-                  />
+                  <Icon name="chip" size={22} color={theme.colors.primary} />
                   <Text variant="titleMedium">Diagnóstico do acelerador</Text>
                 </View>
 
@@ -358,9 +352,7 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
                     size={20}
                     color={theme.colors.onTertiaryContainer}
                   />
-                  <Text
-                    variant="bodySmall"
-                    style={styles.reloadNoticeText}>
+                  <Text variant="bodySmall" style={styles.reloadNoticeText}>
                     O preset foi alterado, mas o modelo atual ainda usa as
                     configurações anteriores.
                   </Text>

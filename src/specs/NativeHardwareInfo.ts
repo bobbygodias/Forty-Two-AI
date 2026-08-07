@@ -32,9 +32,42 @@ export interface GPUInfo {
   gpuType: string;
 }
 
+/**
+ * Parsed shape returned by the Android NDK Vulkan probe.
+ *
+ * The TurboModule method returns JSON rather than a nested map so the JNI
+ * implementation can remain independent of React Native bridge classes.
+ */
+export interface VulkanInfo {
+  available: boolean;
+  error?: string;
+  loaderApiVersion?: string;
+  deviceApiVersion?: string;
+  deviceName?: string;
+  deviceType?: string;
+  vendorId?: number;
+  deviceId?: number;
+  driverVersion?: number;
+  maxStorageBufferRange?: number;
+  maxComputeSharedMemorySize?: number;
+  maxComputeWorkGroupInvocations?: number;
+  maxComputeWorkGroupCount?: [number, number, number];
+  maxComputeWorkGroupSize?: [number, number, number];
+  memoryHeapBytes?: number;
+  deviceLocalHeapBytes?: number;
+  unifiedMemory?: boolean;
+  subgroupSize?: number;
+  supportsShaderFloat16?: boolean;
+  supportsShaderInt8?: boolean;
+  supportsIntegerDotProduct?: boolean;
+  extensionCount?: number;
+}
+
 export interface Spec extends TurboModule {
   getCPUInfo(): Promise<CPUInfo>;
   getGPUInfo(): Promise<GPUInfo>;
+  /** Android-only NDK Vulkan probe, encoded as a JSON string. */
+  getVulkanInfo(): Promise<string>;
   getChipset?(): Promise<string>; // Android only
   /**
    * Get available memory in bytes from the operating system.

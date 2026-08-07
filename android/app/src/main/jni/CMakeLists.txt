@@ -27,4 +27,5 @@ include(${REACT_ANDROID_DIR}/cmake-utils/ReactNative-application.cmake)
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/hardware_info.cpp)
 
 find_library(log-lib log)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${log-lib})
+find_library(vulkan-lib vulkan)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${log-lib} ${vulkan-lib})

@@ -54,6 +54,15 @@ RCT_EXPORT_METHOD(getGPUInfo:(RCTPromiseResolveBlock)resolve
   }
 }
 
+// Vulkan diagnostics are Android-specific. Keep the TurboModule contract
+// cross-platform by returning an explicit unavailable result on iOS, where
+// PocketPal uses Metal instead.
+RCT_EXPORT_METHOD(getVulkanInfo:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  resolve(@"{\"available\":false,\"error\":\"Vulkan probe is Android-only; iOS uses Metal\"}");
+}
+
 RCT_EXPORT_METHOD(getAvailableMemory:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -150,4 +159,3 @@ RCT_EXPORT_METHOD(purgeNativeAllocator:(RCTPromiseResolveBlock)resolve
 }
 
 @end
-

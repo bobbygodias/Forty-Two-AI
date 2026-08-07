@@ -63,6 +63,43 @@ import {mockTTSStore} from '../__mocks__/stores/ttsStore';
 import {checkoutFlowStore as mockCheckoutFlowStore} from '../__mocks__/stores/checkoutFlowStore';
 import {mockSearchProviderStore} from '../__mocks__/stores/searchProviderStore';
 
+const mockEnterpriseRuntimeStore = {
+  backendDevices: [],
+  gpuInfo: {
+    renderer: 'Mock GPU',
+    vendor: 'Mock Vendor',
+    version: 'Mock Version',
+    hasAdreno: false,
+    hasMali: true,
+    hasPowerVR: false,
+    supportsOpenCL: false,
+    gpuType: 'Mali (ARM)',
+  },
+  vulkanInfo: {
+    available: true,
+    loaderApiVersion: '1.3.0',
+    deviceApiVersion: '1.3.0',
+    deviceName: 'Mock Mali GPU',
+    deviceType: 'integrated',
+    supportsShaderFloat16: true,
+    supportsShaderInt8: true,
+    supportsIntegerDotProduct: true,
+  },
+  isRefreshing: false,
+  lastError: null,
+  gpuBackendDevice: undefined,
+  physicalGpuDetected: true,
+  vulkanAvailable: true,
+  gpuBackendAvailable: false,
+  requestedBackend: 'cpu',
+  effectiveBackend: 'cpu',
+  requestedGpuLayers: 0,
+  effectiveGpuLayers: 0,
+  requiresModelReload: false,
+  setRequestedBackend: jest.fn(() => true),
+  refresh: jest.fn(() => Promise.resolve()),
+};
+
 jest.mock('@react-native-clipboard/clipboard', () => mockClipboard);
 
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
@@ -83,6 +120,20 @@ jest.mock('../src/specs/NativeHardwareInfo', () => ({
         supportsOpenCL: false,
         gpuType: 'Mock GPU',
       }),
+    ),
+    getVulkanInfo: jest.fn(() =>
+      Promise.resolve(
+        JSON.stringify({
+          available: true,
+          loaderApiVersion: '1.3.0',
+          deviceApiVersion: '1.3.0',
+          deviceName: 'Mock Mali GPU',
+          deviceType: 'integrated',
+          supportsShaderFloat16: true,
+          supportsShaderInt8: true,
+          supportsIntegerDotProduct: true,
+        }),
+      ),
     ),
     getChipset: jest.fn(() => Promise.resolve('Mock Chipset')),
     getAvailableMemory: jest.fn(() => Promise.resolve(3 * 1000 * 1000 * 1000)), // 3GB
@@ -121,6 +172,7 @@ jest.mock('../src/store', () => {
     ttsStore: mockTTSStore,
     checkoutFlowStore: mockCheckoutFlowStore,
     searchProviderStore: mockSearchProviderStore,
+    enterpriseRuntimeStore: mockEnterpriseRuntimeStore,
     defaultCompletionSettings: mockDefaultCompletionSettings,
   };
 });

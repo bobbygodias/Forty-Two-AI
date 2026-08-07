@@ -5,6 +5,7 @@ import {observer} from 'mobx-react';
 import {createStyles} from './styles';
 import {HeaderRight} from '../HeaderRight';
 import {ChatHeaderTitle} from '../ChatHeaderTitle';
+import {EnterpriseQuickPanel} from '../EnterpriseQuickPanel';
 import {
   useSafeAreaFrame,
   useSafeAreaInsets,
@@ -41,7 +42,10 @@ export const ChatHeader: React.FC = observer(() => {
         <HeaderLeft />
         <ChatHeaderTitle />
       </View>
-      <HeaderRight />
+      <View style={styles.rightSection}>
+        <EnterpriseQuickPanel />
+        <HeaderRight />
+      </View>
     </View>
   );
 });

@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {observer} from 'mobx-react';
-import {Button, IconButton, Surface, Text} from 'react-native-paper';
+import {Button, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -20,6 +20,7 @@ import {
   modelStore,
 } from '../../store';
 import {ModelOrigin, type Theme} from '../../utils/types';
+import {Surface} from '../ui';
 
 const requestedBackendLabels: Record<EnterpriseRequestedBackend, string> = {
   auto: 'Automático',
@@ -121,6 +122,8 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
     try {
       await modelStore.reinitializeContext();
       await enterpriseRuntimeStore.refresh();
+    } catch (error) {
+      console.error('[EnterpriseQuickPanel] Failed to reload model:', error);
     } finally {
       setIsApplying(false);
     }
@@ -143,6 +146,7 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
           styles.statusPill,
           pressed && styles.pressed,
         ]}>
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
         <View style={[styles.statusDot, {backgroundColor: statusColor}]} />
         {!compactHeader ? (
           <Text numberOfLines={1} style={styles.statusText}>
@@ -165,7 +169,6 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
         onRequestClose={() => setVisible(false)}>
         <Pressable style={styles.backdrop} onPress={() => setVisible(false)}>
           <Pressable
-            accessibilityRole="none"
             style={styles.panel}
             onPress={event => event.stopPropagation()}>
             <View style={styles.panelHeader}>
@@ -196,6 +199,7 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
                     </Text>
                   </View>
                   <View style={styles.backendBadge}>
+                    {/* eslint-disable-next-line react-native/no-inline-styles */}
                     <View
                       style={[
                         styles.statusDot,
@@ -389,7 +393,11 @@ export const EnterpriseQuickPanel: React.FC = observer(() => {
                 icon="refresh"
                 loading={enterpriseRuntimeStore.isRefreshing}
                 disabled={enterpriseRuntimeStore.isRefreshing}
-                onPress={() => enterpriseRuntimeStore.refresh()}>
+                onPress={() => {
+                  enterpriseRuntimeStore.refresh().catch(() => {
+                    // Diagnostics are rendered from store state.
+                  });
+                }}>
                 Atualizar diagnóstico
               </Button>
             </ScrollView>

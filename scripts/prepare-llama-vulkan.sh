@@ -125,7 +125,8 @@ PY
 # Add a narrowly-scoped Vulkan block to llama.rn's source-build CMake. It is
 # attached only to rnllama_v8_2_dotprod, which is the variant Android already
 # selects on the MEGA 3 (DotProd yes, I8MM no). CPU remains compiled into the
-# same library and remains selectable/fallback-safe.
+# same library and remains selectable/fallback-safe. Running this preparation
+# script is itself the opt-in, so the patched node_modules build enables it.
 python3 - "${RN_CMAKE}" <<'PY'
 from pathlib import Path
 import sys
@@ -145,7 +146,7 @@ block = r'''    # POCKETPAL_ENTERPRISE_VULKAN_BEGIN
     # llama.rn 0.12.7 does not ship an Android Vulkan target. For the MEGA 3
     # experiment we add Vulkan to the existing dotprod ARM64 variant instead
     # of inventing a second runtime ABI. CPU is still compiled in this target.
-    if (RNLLAMA_ENABLE_VULKAN AND "${target_name}" STREQUAL "rnllama_v8_2_dotprod")
+    if ("${target_name}" STREQUAL "rnllama_v8_2_dotprod")
         find_library(VULKAN_SYSTEM_LIB vulkan)
         if (NOT VULKAN_SYSTEM_LIB)
             message(FATAL_ERROR "Android system Vulkan loader was not found")

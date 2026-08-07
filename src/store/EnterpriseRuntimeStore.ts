@@ -8,7 +8,6 @@ import NativeHardwareInfo, {
 } from '../specs/NativeHardwareInfo';
 import {getAvailableDevices} from '../utils/deviceSelection';
 import {ModelOrigin} from '../utils/types';
-import {modelStore} from './ModelStore';
 
 export type EnterpriseRequestedBackend = 'auto' | 'cpu' | 'gpu' | 'hybrid';
 export type EnterpriseEffectiveBackend =
@@ -18,6 +17,9 @@ export type EnterpriseEffectiveBackend =
   | 'gpu'
   | 'hybrid'
   | 'unverified';
+
+const getModelStore = () =>
+  require('./ModelStore').modelStore as typeof import('./ModelStore').modelStore;
 
 const parseVulkanInfo = (json: string): VulkanInfo => {
   const parsed: unknown = JSON.parse(json);
@@ -38,6 +40,11 @@ const parseVulkanInfo = (json: string): VulkanInfo => {
  * separate them from what the native engine can actually execute. This store
  * keeps that distinction explicit. Hardware discovery is not persisted;
  * requested settings remain persisted by ModelStore.contextInitParams.
+ *
+ * ModelStore intentionally imports the store barrel in legacy PocketPal code,
+ * so this module resolves ModelStore lazily. That avoids constructing the
+ * Enterprise store through the barrel while ModelStore itself is still being
+ * initialized in Jest/Metro.
  */
 class EnterpriseRuntimeStore {
   backendDevices: NativeBackendDeviceInfo[] = [];
@@ -73,6 +80,7 @@ class EnterpriseRuntimeStore {
   }
 
   get requestedBackend(): EnterpriseRequestedBackend {
+    const modelStore = getModelStore();
     const params = modelStore.contextInitParams;
     const layers = params.n_gpu_layers ?? 0;
     const devices = params.devices;
@@ -97,6 +105,7 @@ class EnterpriseRuntimeStore {
   }
 
   get effectiveBackend(): EnterpriseEffectiveBackend {
+    const modelStore = getModelStore();
     const activeModel = modelStore.activeModel;
 
     if (activeModel?.origin === ModelOrigin.REMOTE) {
@@ -136,7 +145,7 @@ class EnterpriseRuntimeStore {
   }
 
   get requestedGpuLayers(): number {
-    return modelStore.contextInitParams.n_gpu_layers ?? 0;
+    return getModelStore().contextInitParams.n_gpu_layers ?? 0;
   }
 
   get effectiveGpuLayers(): number | null {
@@ -148,6 +157,7 @@ class EnterpriseRuntimeStore {
   }
 
   get requiresModelReload(): boolean {
+    const modelStore = getModelStore();
     if (!modelStore.context || !modelStore.activeContextSettings) {
       return false;
     }
@@ -165,6 +175,8 @@ class EnterpriseRuntimeStore {
   }
 
   setRequestedBackend(backend: EnterpriseRequestedBackend): boolean {
+    const modelStore = getModelStore();
+
     if (backend === 'cpu') {
       modelStore.setDevices(['CPU']);
       modelStore.setNGPULayers(0);
@@ -172,6 +184,12 @@ class EnterpriseRuntimeStore {
     }
 
     if (backend === 'auto') {
+      // Keep Android accelerator experiments conservative until the backend
+      // itself reports Flash Attention compatibility. This covers both the
+      // stock OpenCL path and the Enterprise Vulkan build.
+      if (Platform.OS === 'android') {
+        modelStore.setFlashAttnType('off');
+      }
       modelStore.setDevices(undefined);
       modelStore.setNGPULayers(99);
       return true;
@@ -184,11 +202,9 @@ class EnterpriseRuntimeStore {
 
     modelStore.setDevices([gpuDeviceName]);
 
-    // The stock Android GPU path exposed by llama.rn 0.12.7 is OpenCL,
-    // whose device option only supports flash attention disabled. Keep this
-    // normalization beside backend selection so model reload cannot receive
-    // an invalid OpenCL + flash-attention combination. The Vulkan fork will
-    // replace this with backend-reported capabilities.
+    // The stock Android GPU path exposed by llama.rn 0.12.7 is OpenCL and the
+    // new Vulkan path is still being validated on Mali. Keep FA off until the
+    // active backend reports the capability instead of guessing from hardware.
     if (Platform.OS === 'android') {
       modelStore.setFlashAttnType('off');
     }

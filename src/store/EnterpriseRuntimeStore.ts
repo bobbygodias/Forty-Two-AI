@@ -3,6 +3,7 @@ import type {NativeBackendDeviceInfo} from 'llama.rn';
 
 import NativeHardwareInfo, {
   type GPUInfo,
+  type VulkanInfo,
 } from '../specs/NativeHardwareInfo';
 import {getAvailableDevices} from '../utils/deviceSelection';
 import {ModelOrigin} from '../utils/types';
@@ -17,6 +18,18 @@ export type EnterpriseEffectiveBackend =
   | 'hybrid'
   | 'unverified';
 
+const parseVulkanInfo = (json: string): VulkanInfo => {
+  const parsed: unknown = JSON.parse(json);
+  if (
+    typeof parsed !== 'object' ||
+    parsed === null ||
+    typeof (parsed as {available?: unknown}).available !== 'boolean'
+  ) {
+    throw new Error('Invalid Vulkan diagnostic payload');
+  }
+  return parsed as VulkanInfo;
+};
+
 /**
  * Runtime-only hardware and backend state for PocketPal Enterprise.
  *
@@ -28,6 +41,7 @@ export type EnterpriseEffectiveBackend =
 class EnterpriseRuntimeStore {
   backendDevices: NativeBackendDeviceInfo[] = [];
   gpuInfo: GPUInfo | null = null;
+  vulkanInfo: VulkanInfo | null = null;
   isRefreshing = false;
   lastError: string | null = null;
 
@@ -41,11 +55,16 @@ class EnterpriseRuntimeStore {
 
   get physicalGpuDetected(): boolean {
     return Boolean(
-      this.gpuInfo?.renderer ||
+      this.vulkanInfo?.available ||
+        this.gpuInfo?.renderer ||
         this.gpuInfo?.hasMali ||
         this.gpuInfo?.hasAdreno ||
         this.gpuInfo?.hasPowerVR,
     );
+  }
+
+  get vulkanAvailable(): boolean {
+    return this.vulkanInfo?.available === true;
   }
 
   get gpuBackendAvailable(): boolean {
@@ -185,9 +204,10 @@ class EnterpriseRuntimeStore {
       this.lastError = null;
     });
 
-    const [devicesResult, gpuResult] = await Promise.allSettled([
+    const [devicesResult, gpuResult, vulkanResult] = await Promise.allSettled([
       getAvailableDevices(),
       NativeHardwareInfo.getGPUInfo(),
+      NativeHardwareInfo.getVulkanInfo(),
     ]);
 
     runInAction(() => {
@@ -203,6 +223,18 @@ class EnterpriseRuntimeStore {
       } else {
         this.gpuInfo = null;
         this.lastError = this.lastError ?? String(gpuResult.reason);
+      }
+
+      if (vulkanResult.status === 'fulfilled') {
+        try {
+          this.vulkanInfo = parseVulkanInfo(vulkanResult.value);
+        } catch (error) {
+          this.vulkanInfo = null;
+          this.lastError = this.lastError ?? String(error);
+        }
+      } else {
+        this.vulkanInfo = null;
+        this.lastError = this.lastError ?? String(vulkanResult.reason);
       }
 
       this.isRefreshing = false;

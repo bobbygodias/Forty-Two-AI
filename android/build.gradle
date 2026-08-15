@@ -1,7 +1,12 @@
 buildscript {
     ext {
         buildToolsVersion = "36.0.0"
-        minSdkVersion = 24
+        // Forty-Two AI's Vulkan backend uses Vulkan 1.1-era entry points such as
+        // vkGetPhysicalDeviceFeatures2. Android's NDK Vulkan stub exports these
+        // symbols starting at API 28. The target MEGA 3 runs API 35, so keeping
+        // the application floor at 28 lets the native linker resolve Vulkan
+        // correctly without bundling or replacing Android's system libvulkan.
+        minSdkVersion = 28
         compileSdkVersion = 36
         targetSdkVersion = 36
         ndkVersion = "27.3.13750724"

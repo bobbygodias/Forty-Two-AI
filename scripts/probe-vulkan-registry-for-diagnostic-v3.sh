@@ -21,40 +21,34 @@ if marker in text:
     print('Forty-Two diagnostic v3 Vulkan registry probe already present')
     raise SystemExit(0)
 
+# Keep this deliberately tolerant of llama.rn's namespace transform. The
+# previous V3 script tried to match the whole preprocessor/env-var block and
+# was too brittle. For the A/B experiment we only need to replace the actual
+# register_backend(vk_reg()) call with a factory-only call, preserving whatever
+# surrounding #ifdef / getenv logic this exact llama.rn source contains.
 pattern = re.compile(
-    r'#ifdef LM_GGML_USE_VULKAN\s*\n'
-    r'\s*if \(getenv\("LM_GGML_DISABLE_VULKAN"\) == nullptr\) \{\s*\n'
-    r'\s*register_backend\(lm_ggml_backend_vk_reg\(\)\);\s*\n'
-    r'\s*\} else \{\s*\n'
-    r'\s*LM_GGML_LOG_DEBUG\("Vulkan backend disabled by LM_GGML_DISABLE_VULKAN environment variable\\n"\);\s*\n'
-    r'\s*\}\s*\n'
-    r'#endif'
+    r'(?P<indent>^[ \t]*)register_backend\((?P<factory>(?:lm_)?ggml_backend_vk_reg\(\))\);',
+    re.MULTILINE,
 )
 
-replacement = r'''#ifdef LM_GGML_USE_VULKAN
-        // FORTY_TWO_DIAGNOSTIC_V3_VULKAN_REGISTRY_PROBE
-        // Binary-search the Android/Mali crash path. V2 proved that skipping
-        // Vulkan entirely makes the same DotProd build stable. V3 executes
-        // only the Vulkan registry factory, but intentionally does NOT add the
-        // returned registry to ggml's backend list and therefore does not call
-        // reg_dev_count/reg_dev_get or expose a GPU device to model loading.
-        //
-        // Result interpretation on the MEGA 3:
-        //   - crash: lm_ggml_backend_vk_reg() / its static initialization is enough
-        //   - stable: failure is later, in register_backend/device enumeration/use
-        LM_GGML_LOG_WARN("Forty-Two V3: entering Vulkan registry-factory probe\n");
-        lm_ggml_backend_reg_t forty_two_vk_reg = lm_ggml_backend_vk_reg();
-        if (forty_two_vk_reg != nullptr) {
-            LM_GGML_LOG_WARN("Forty-Two V3: Vulkan registry factory returned non-null; device enumeration intentionally skipped\n");
-        } else {
-            LM_GGML_LOG_WARN("Forty-Two V3: Vulkan registry factory returned null\n");
-        }
-#endif'''
+match = pattern.search(text)
+if not match:
+    raise SystemExit('Could not locate Vulkan register_backend(...) call for V3 probe')
+
+indent = match.group('indent')
+factory = match.group('factory')
+replacement = (
+    f'{indent}// FORTY_TWO_DIAGNOSTIC_V3_VULKAN_REGISTRY_PROBE\n'
+    f'{indent}// Factory-only A/B probe: execute Vulkan registry creation, but do\n'
+    f'{indent}// not register it and therefore do not enumerate/expose GPU devices.\n'
+    f'{indent}auto forty_two_vk_reg = {factory};\n'
+    f'{indent}(void) forty_two_vk_reg;'
+)
 
 patched, count = pattern.subn(replacement, text, count=1)
 if count != 1:
-    raise SystemExit('Could not locate the llama.rn Vulkan registry block for V3 probe')
+    raise SystemExit(f'Unexpected Vulkan patch count: {count}')
 
 path.write_text(patched)
-print('Patched ggml backend registry for Forty-Two diagnostic v3 factory-only Vulkan probe')
+print(f'Patched Vulkan registry factory-only probe using {factory}')
 PY

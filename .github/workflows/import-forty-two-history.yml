@@ -1,0 +1,39 @@
+name: Import Forty-Two AI history
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout bootstrap repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Import current Forty-Two AI development history
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "Forty-Two AI Migration"
+          git config user.email "actions@users.noreply.github.com"
+
+          # Fetch the complete development branch from the historical repository.
+          git fetch --no-tags https://github.com/bobbygodias/pocketpal-enterprise.git \
+            enterprise/mega3-vulkan-ui
+
+          # Keep the first import non-destructive. After SHA verification, main
+          # can be moved to this exact commit and the historical repo can remain
+          # untouched as an archive/reference.
+          git push \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            FETCH_HEAD:refs/heads/migration/full-history
+
+          echo "Imported source commit: $(git rev-parse FETCH_HEAD)"

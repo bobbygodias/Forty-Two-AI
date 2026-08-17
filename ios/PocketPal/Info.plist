@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>PocketPal</string>
+	<string>Forty-Two AI</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -57,13 +57,13 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>PocketPal uses your camera to capture images and video for local AI analysis only. All processing happens on your device and no images are transmitted to external servers.</string>
+	<string>Forty-Two AI uses your camera to capture images and video for local AI analysis only. All processing happens on your device and no images are transmitted to external servers.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>PocketPal connects to AI servers you run on your own network (like Ollama or llama.cpp) when you add them as remote endpoints.</string>
+	<string>Forty-Two AI connects to AI servers you run on your own network (such as Ollama or llama.cpp) when you add them as remote endpoints.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>PocketPal accesses your photo library to select images for local AI analysis only. Selected images are processed entirely on your device and are never transmitted to external servers.</string>
+	<string>Forty-Two AI accesses your photo library to select images for local AI analysis only. Selected images are processed entirely on your device and are never transmitted to external servers.</string>
 	<key>NSSiriUsageDescription</key>
-	<string>PocketPal uses Siri to let you ask questions to your AI Pals using voice commands.</string>
+	<string>Forty-Two AI uses Siri to let you ask questions to your local AI using voice commands.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>

@@ -1,0 +1,48 @@
+name: Forty-Two AI CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.21.0'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Validate localization files
+        run: node scripts/validate-l10n.js
+
+      - name: Verify font registration
+        run: node scripts/verify-fonts.js
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn test --coverage
+
+  note-native-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Native build ownership
+        run: |
+          echo 'Android MEGA 3 / Vulkan builds live in enterprise-android-ci.yml.'
+          echo 'This workflow intentionally avoids duplicating the expensive native diagnostic build.'

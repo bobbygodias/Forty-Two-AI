@@ -1,0 +1,65 @@
+name: Forty-Two AI Autofix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/enterprise-autofix.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.21.0'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Break ModelStore barrel-import cycle
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('src/store/ModelStore.ts')
+          text = path.read_text()
+          old = "import {uiStore, hfStore} from '.';"
+          new = "import {uiStore} from './UIStore';\nimport {hfStore} from './HFStore';"
+          if old in text:
+              path.write_text(text.replace(old, new, 1))
+          elif new not in text:
+              raise SystemExit('ModelStore store imports are in an unexpected form')
+
+      - name: Format changed source
+        run: yarn prettier --write src/store/ModelStore.ts
+
+      - name: Verify ModelStore test and types
+        run: |
+          yarn jest src/store/__tests__/ModelStore.test.ts --runInBand
+          yarn typecheck
+
+      - name: Commit cycle fix
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'Forty-Two AI CI'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/store/ModelStore.ts
+          git commit -m 'fix(forty-two): break store initialization cycle'
+          git push origin HEAD:main

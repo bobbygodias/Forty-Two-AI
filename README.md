@@ -1,12 +1,14 @@
 <div align="center">
 
+<img src="assets/branding/forty-two-ai-logo.webp" alt="Forty-Two AI" width="256" />
+
 # Forty-Two AI
 
-**A resposta para a Grande Pergunta da Vida, o Universo e Tudo Mais — rodando no seu próprio dispositivo.**
+**A resposta para a Grande Pergunta da Vida, do Universo e de Tudo Mais — rodando no seu próprio dispositivo.**
+
+**NÃO ENTRE EM PÂNICO.**
 
 Local-first · offline · privado · auditável · aberto
-
-> **NÃO ENTRE EM PÂNICO.** Ainda estamos ensinando o Android a conversar civilizadamente com Vulkan.
 
 </div>
 
@@ -14,86 +16,54 @@ Local-first · offline · privado · auditável · aberto
 
 ## O que é o Forty-Two AI
 
-Forty-Two AI é um projeto de inteligência artificial local para celulares e tablets, construído para que modelo, dados, conversas e execução permaneçam sob controle do usuário sempre que tecnicamente possível.
+Forty-Two AI é um projeto de inteligência artificial local pensado para celulares, tablets e outros dispositivos pessoais. A proposta é simples: colocar modelos, conversas, ferramentas e execução o mais perto possível de quem realmente deve controlá-los — o usuário.
 
-Este repositório nasceu de uma base PocketPal AI, mas **não pretende ser apenas uma skin, um fork de marca ou um PocketPal modificado**. A base está sendo progressivamente reconstruída em torno de uma experiência própria: chat-first, interface para tablet, seleção explícita de backend, diagnóstico real de hardware, aceleração local, controles avançados e uma identidade visual própria.
+Não queremos apenas uma interface bonita para um modelo. Queremos uma experiência completa: conversa fluida, execução local, configuração compreensível, diagnóstico honesto, aceleração quando disponível, fallback quando necessário e uma interface que trate tecnologia poderosa sem parecer um painel de usina nuclear feito em 1997.
 
-O foco imediato é fazer a camada nativa funcionar de forma verificável antes de embelezar o que ainda não consegue sair da garagem.
+## Por que 42?
 
-## Estado atual
+Porque algumas respostas são importantes demais para serem levadas solenemente o tempo inteiro.
 
-O alvo de validação inicial é o **Blackview MEGA 3**, com MediaTek Helio G99 / MT6789 e Mali-G57 MC2. O caminho CPU já foi validado e a investigação Vulkan está sendo avançada em etapas deliberadamente pequenas para separar:
-
-1. descoberta física da GPU;
-2. criação do registry Vulkan;
-3. contagem e enumeração de dispositivos do backend;
-4. registro do backend no llama.cpp / llama.rn;
-5. criação do dispositivo de inferência;
-6. offload real de camadas e execução de tensores.
-
-Os scripts de diagnóstico ficam em [`scripts/`](scripts/) e o workflow Android dedicado está em [`.github/workflows/enterprise-android-ci.yml`](.github/workflows/enterprise-android-ci.yml).
-
-## Princípios do projeto
-
-- **Local primeiro.** A rede deve ser opção, não requisito para pensar.
-- **Privacidade por arquitetura.** Dados locais não deveriam precisar de promessa de marketing para continuar locais.
-- **Fallback honesto.** Se a GPU não estiver executando inferência, a interface deve dizer CPU — não exibir um ícone verde e torcer pelo melhor.
-- **Hardware observável.** Diagnóstico físico e backend de inferência são coisas diferentes e aparecem separadamente.
-- **Controle do usuário.** Modelos, contexto, threads, backend e parâmetros devem ser compreensíveis e configuráveis.
-- **Código aberto e auditável.** O projeto deve poder ser estudado, adaptado e continuado sem depender de uma caixa-preta central.
-- **Sem magia falsa.** Primeiro causalidade; depois brilho, animação e grandeza.
-
-## Identidade Forty-Two
-
-A referência a *O Guia do Mochileiro das Galáxias* é intencional, mas não queremos transformar o aplicativo numa fantasia temática. Ela aparece como humor seco e pequenos sinais para quem reconhecer:
+A referência a **O Guia do Mochileiro das Galáxias**, de Douglas Adams, faz parte da identidade do projeto. Ela aparece como uma segunda camada: quem nunca leu deve entender tudo normalmente; quem conhece deve encontrar pequenos sinais pelo caminho.
 
 - **42** — naturalmente.
-- **NÃO ENTRE EM PÂNICO** — falhas recuperáveis, onboarding e diagnóstico.
-- **Majoritariamente inofensivo** — estados experimentais que já não parecem capazes de incendiar o dispositivo.
-- **E obrigado pelos peixes** — encerramentos, créditos e despedidas apropriadas.
+- **NÃO ENTRE EM PÂNICO** — para lembrar que uma mensagem de erro não precisa parecer o fim do universo.
+- **Majoritariamente inofensivo** — para experiências, laboratórios e coisas que sobreviveram a testes suficientes para ganhar algum otimismo.
+- **E obrigado pelos peixes** — porque toda boa jornada merece uma despedida adequada.
 
-As regras estão documentadas em [`docs/forty-two/BRAND_AND_LORE.md`](docs/forty-two/BRAND_AND_LORE.md).
+A regra é: **clareza primeiro, piada depois**.
 
-## Construção
+## Princípios
 
-O projeto continua sendo React Native e, durante a migração, alguns identificadores técnicos legados ainda contêm `PocketPal` (`com.pocketpalai`, projeto iOS, deep links e nomes internos). **Isso é deliberado por enquanto.** Renomear package IDs, targets e símbolos nativos no meio da investigação JNI/Vulkan adicionaria variáveis inúteis ao problema.
+- **Local primeiro.** A rede deve ser opção, não requisito para pensar.
+- **Privacidade por arquitetura.** Dados locais devem permanecer locais por projeto, não apenas por promessa.
+- **Controle do usuário.** Modelos, contexto, parâmetros e recursos devem ser compreensíveis e configuráveis.
+- **Fallback honesto.** Se algo não estiver disponível, o aplicativo deve dizer isso claramente e continuar da melhor forma possível.
+- **Observabilidade.** Capacidade declarada e execução comprovada não são a mesma coisa.
+- **Código aberto e auditável.** O projeto deve poder ser estudado, adaptado, corrigido e continuado.
+- **Sem magia falsa.** Primeiro causalidade e funcionamento; depois brilho, animação e grandeza.
 
-A identidade que o usuário vê já é Forty-Two AI; os identificadores internos serão migrados em uma etapa própria, com testes e sem quebrar o histórico de diagnóstico.
+## Direção
 
-### Android — diagnóstico MEGA 3
+Forty-Two AI está sendo construído como uma experiência **chat-first**, com identidade visual própria, controles rápidos, biblioteca de modelos, presets, configurações avançadas, ferramentas locais e uma camada de execução capaz de aproveitar o hardware disponível sem esconder do usuário o que realmente está acontecendo.
 
-```bash
-yarn install --frozen-lockfile
-bash scripts/prepare-llama-vulkan.sh
-bash scripts/probe-vulkan-device-count-for-diagnostic-v4.sh
-cd android
-./gradlew assembleProdDebug \
-  -PrnllamaBuildFromSource=true \
-  -PreactNativeArchitectures=arm64-v8a
-```
+A estética do projeto parte de preto e grafite, metal, luz contida e contraste preciso. O resultado deve parecer tecnológico sem virar carnaval de neon — e grandioso sem perder legibilidade.
 
-Consulte [`docs/enterprise/PROJECT_SPEC.md`](docs/enterprise/PROJECT_SPEC.md) para o histórico técnico e os critérios do projeto em andamento.
+## Estado do projeto
 
-## Marca e assets
+**Em desenvolvimento ativo.** Algumas partes já funcionam; outras estão sendo reconstruídas e testadas em etapas pequenas para que cada avanço possa ser entendido, reproduzido e melhorado.
 
-O launcher herdado no histórico ainda é o ícone original do PocketPal e **não será apresentado como se fosse o logo Forty-Two AI**. O asset canônico FortyTwoAI será mantido em `assets/branding/` e propagado para Android, iOS, splash e documentação assim que a fonte original estiver no repositório.
+Isso é deliberado. Um sistema local confiável vale mais do que uma demonstração bonita que só funciona quando ninguém pergunta por quê.
 
-Isso é melhor do que redesenhar de memória um logo que já existe.
+## Marca
 
-## Origem, crédito e licença
-
-Forty-Two AI é derivado de **PocketPal AI**, de Asghar Ghorbani e colaboradores. O histórico importado e o arquivo [`LICENSE`](LICENSE) preservam essa origem e os termos MIT aplicáveis à base.
-
-As modificações, experimentos de hardware, UX e identidade Forty-Two AI vivem neste repositório; a atribuição do trabalho anterior permanece onde deve permanecer.
-
-## Status
-
-**Experimental.** O caminho CPU funciona; o backend Vulkan Android está em investigação controlada. Não confunda “a GPU existe” com “a GPU está fazendo inferência”. Nós também não confundimos.
+O logo acima é a identidade visual canônica do **Forty-Two AI**. Assets e regras de uso ficam em [`assets/branding/`](assets/branding/) e [`docs/forty-two/BRAND_AND_LORE.md`](docs/forty-two/BRAND_AND_LORE.md).
 
 <div align="center">
 
-**Forty-Two AI**  
-*Majoritariamente inofensivo.*
+### Forty-Two AI
+
+**Majoritariamente inofensivo.**
 
 _E obrigado pelos peixes._
 

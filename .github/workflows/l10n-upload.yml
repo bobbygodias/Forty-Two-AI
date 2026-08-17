@@ -1,0 +1,38 @@
+# Legacy translation bridge inherited from PocketPal AI.
+#
+# Forty-Two AI does not automatically upload source strings to the upstream
+# PocketPal Weblate project. Keep this workflow manual-only until the project
+# has its own translation infrastructure.
+
+name: Legacy PocketPal Weblate upload (manual only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Explain legacy target
+        run: |
+          echo 'WARNING: this workflow targets the historical PocketPal Weblate integration.'
+          echo 'Run it only when intentionally synchronizing with that upstream translation project.'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.21.0'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Upload to Weblate
+        env:
+          WEBLATE_TOKEN: ${{ secrets.WEBLATE_TOKEN }}
+        run: node scripts/sync-weblate.js upload

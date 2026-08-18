@@ -58,7 +58,10 @@ export const ChatHeaderTitle: React.FC = observer(() => {
       <View style={styles.subtitleRow}>
         <View style={[styles.statusDot, {backgroundColor: statusColor}]} />
         <Text numberOfLines={1} variant="bodySmall" style={styles.subtitle}>
-          {modelLabel} · {executionLabel}
+          {modelLabel}
+        </Text>
+        <Text numberOfLines={1} variant="bodySmall" style={styles.subtitle}>
+          · {executionLabel}
         </Text>
       </View>
     </View>

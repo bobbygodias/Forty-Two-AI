@@ -1,8 +1,8 @@
 import {
-  AcceleratorApi,
   DeviceCapabilityProfile,
   ModelProfile,
   RuntimeAdapter,
+  RuntimeDeviceDescriptor,
   RuntimeLoadRequest,
   RuntimeSession,
   RuntimeSupport,
@@ -10,17 +10,18 @@ import {
 } from '../types';
 
 export interface GGMLBridge {
-  /** Accelerator APIs actually compiled/registered in this GGML build. */
-  getCompiledAcceleratorApis(): Promise<AcceleratorApi[]>;
+  /** Devices that this concrete GGML build currently exposes to the app. */
+  getRuntimeDevices(): Promise<RuntimeDeviceDescriptor[]>;
   load(request: RuntimeLoadRequest): Promise<RuntimeSession>;
 }
 
 /**
  * Adapter for GGUF/GGML-family runtimes.
  *
- * This class deliberately knows nothing about React Native stores or UI. The
- * concrete llama.rn bridge will be introduced separately so existing initLlama
- * behavior can be reproduced before ModelStore is switched over.
+ * Hardware identity and engine identity are deliberately kept separate. A
+ * physical GPU is not offered as a target unless BOTH the hardware probe has
+ * verified compute and this concrete GGML bridge exposes a matching runtime
+ * device/API.
  */
 export class GGMLAdapter implements RuntimeAdapter {
   readonly id = 'ggml' as const;
@@ -42,22 +43,39 @@ export class GGMLAdapter implements RuntimeAdapter {
       };
     }
 
-    const compiledApis = await this.bridge.getCompiledAcceleratorApis();
-    const targets: RuntimeTarget[] = [{device: 'cpu'}];
+    const runtimeDevices = await this.bridge.getRuntimeDevices();
+    const runtimeCpu = runtimeDevices.find(item => item.device === 'cpu');
+    const targets: RuntimeTarget[] = [
+      {
+        device: 'cpu',
+        runtimeDeviceId: runtimeCpu?.id,
+        runtimeDeviceName: runtimeCpu?.name ?? 'CPU',
+      },
+    ];
 
-    for (const accelerator of device.accelerators) {
-      if (
-        !accelerator.available ||
-        !accelerator.computeVerified ||
-        !compiledApis.includes(accelerator.api)
-      ) {
+    for (const runtimeDevice of runtimeDevices) {
+      if (runtimeDevice.device === 'cpu' || !runtimeDevice.api) {
+        continue;
+      }
+
+      const verifiedHardware = device.accelerators.find(
+        accelerator =>
+          accelerator.kind === runtimeDevice.device &&
+          accelerator.api === runtimeDevice.api &&
+          accelerator.available &&
+          accelerator.computeVerified,
+      );
+
+      if (!verifiedHardware) {
         continue;
       }
 
       targets.push({
-        device: accelerator.kind,
-        api: accelerator.api,
-        acceleratorId: accelerator.id,
+        device: runtimeDevice.device,
+        api: runtimeDevice.api,
+        acceleratorId: verifiedHardware.id,
+        runtimeDeviceId: runtimeDevice.id,
+        runtimeDeviceName: runtimeDevice.name,
       });
     }
 

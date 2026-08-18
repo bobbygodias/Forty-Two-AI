@@ -55,7 +55,8 @@ const options: Array<{
   {
     id: 'gpu',
     icon: 'expansion-card-variant',
-    description: 'Solicita offload Vulkan quando o runtime realmente expõe a GPU.',
+    description:
+      'Solicita offload Vulkan quando o runtime realmente expõe a GPU.',
   },
   {
     id: 'hybrid',
@@ -193,8 +194,14 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
                 </View>
 
                 <View style={styles.metrics}>
-                  <Metric label="Contexto" value={modelStore.contextInitParams.n_ctx} />
-                  <Metric label="Threads" value={modelStore.contextInitParams.n_threads} />
+                  <Metric
+                    label="Contexto"
+                    value={modelStore.contextInitParams.n_ctx}
+                  />
+                  <Metric
+                    label="Threads"
+                    value={modelStore.contextInitParams.n_threads}
+                  />
                   <Metric
                     label="GPU real"
                     value={
@@ -215,7 +222,8 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
               <View style={styles.grid}>
                 {options.map(option => {
                   const selected = requested === option.id;
-                  const needsGpu = option.id === 'gpu' || option.id === 'hybrid';
+                  const needsGpu =
+                    option.id === 'gpu' || option.id === 'hybrid';
                   const disabled =
                     needsGpu && !enterpriseRuntimeStore.gpuBackendAvailable;
 
@@ -319,7 +327,9 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
                 icon="refresh"
                 loading={enterpriseRuntimeStore.isRefreshing}
                 disabled={enterpriseRuntimeStore.isRefreshing}
-                onPress={() => enterpriseRuntimeStore.refresh().catch(() => {})}>
+                onPress={() =>
+                  enterpriseRuntimeStore.refresh().catch(() => {})
+                }>
                 Atualizar diagnóstico
               </Button>
             </ScrollView>

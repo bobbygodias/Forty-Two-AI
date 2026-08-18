@@ -19,7 +19,9 @@ export type EnterpriseEffectiveBackend =
   | 'unverified';
 
 const getModelStore = () =>
-  require('./ModelStore').modelStore as typeof import('./ModelStore').modelStore;
+  require('./ModelStore').modelStore as typeof import(
+    './ModelStore'
+  ).modelStore;
 
 const parseVulkanInfo = (json: string): VulkanInfo => {
   const parsed: unknown = JSON.parse(json);

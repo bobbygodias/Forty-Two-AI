@@ -49,6 +49,12 @@ const ggmlSupport: RuntimeSupport = {
   ],
   supportsLayerSplit: true,
   supportsOperatorSplit: false,
+  supportsStrictAcceleration: false,
+};
+
+const strictCapableSupport: RuntimeSupport = {
+  ...ggmlSupport,
+  supportsStrictAcceleration: true,
 };
 
 describe('ExecutionPlanner', () => {
@@ -75,11 +81,11 @@ describe('ExecutionPlanner', () => {
     expect(plan.primary.api).toBe('vulkan');
   });
 
-  it('strict accelerator mode has no fallback', () => {
+  it('strict accelerator mode has no fallback when the runtime can prove it', () => {
     const plan = planExecution({
       model,
       device: device(true),
-      support: [ggmlSupport],
+      support: [strictCapableSupport],
       policy: 'accelerator-strict',
     });
 
@@ -87,15 +93,30 @@ describe('ExecutionPlanner', () => {
     expect(plan.fallback).toBeUndefined();
   });
 
-  it('strict accelerator mode fails when compute was not verified', () => {
+  it('does not expose strict mode from accelerator detection alone', () => {
+    expect(() =>
+      planExecution({
+        model,
+        device: device(true),
+        support: [ggmlSupport],
+        policy: 'accelerator-strict',
+      }),
+    ).toThrow(
+      'No runtime can prove strict accelerator-only execution for this model',
+    );
+  });
+
+  it('strict accelerator mode also fails when compute was not verified', () => {
     expect(() =>
       planExecution({
         model,
         device: device(false),
-        support: [ggmlSupport],
+        support: [strictCapableSupport],
         policy: 'accelerator-strict',
       }),
-    ).toThrow('No verified accelerator runtime is available');
+    ).toThrow(
+      'No runtime can prove strict accelerator-only execution for this model',
+    );
   });
 
   it('balanced mode produces a real two-target layer split', () => {

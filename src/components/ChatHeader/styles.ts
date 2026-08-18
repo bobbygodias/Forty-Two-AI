@@ -44,7 +44,7 @@ export const createStyles = ({
     headerWithoutDivider: {
       elevation: 0,
       shadowOpacity: 0,
-      borderBottomWidth: 1,
+      borderBottomWidth: 0,
       borderBottomColor: 'transparent',
       backgroundColor: theme.colors.surface,
     },

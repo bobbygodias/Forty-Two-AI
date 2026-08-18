@@ -14,7 +14,13 @@ function memoryBudget(device: DeviceCapabilityProfile): number {
   // Reserve headroom for Android, UI, KV growth and driver allocations. This is
   // intentionally based on available memory, never a device-name allowlist.
   const reserve = Math.max(GIB, device.memory.totalBytes * 0.15);
-  return Math.max(0, Math.min(device.memory.availableBytes * 0.85, device.memory.totalBytes - reserve));
+  return Math.max(
+    0,
+    Math.min(
+      device.memory.availableBytes * 0.85,
+      device.memory.totalBytes - reserve,
+    ),
+  );
 }
 
 function isVerifiedAccelerator(
@@ -88,7 +94,9 @@ export function planExecution({
   const candidates = support.filter(candidate => candidate.canLoad);
 
   if (candidates.length === 0) {
-    throw new Error(`No installed runtime can load model format: ${model.format}`);
+    throw new Error(
+      `No installed runtime can load model format: ${model.format}`,
+    );
   }
 
   if (policy === 'cpu') {
@@ -115,9 +123,13 @@ export function planExecution({
     .filter(candidate => candidate.accelerator);
 
   if (policy === 'accelerator-strict') {
-    const candidate = acceleratorCandidates[0];
+    const candidate = acceleratorCandidates.find(
+      item => item.support.supportsStrictAcceleration,
+    );
     if (!candidate?.accelerator) {
-      throw new Error('No verified accelerator runtime is available for this model');
+      throw new Error(
+        'No runtime can prove strict accelerator-only execution for this model',
+      );
     }
     return {
       adapter: candidate.support.adapter,
@@ -127,7 +139,7 @@ export function planExecution({
       memoryBudgetBytes: budget,
       reasons: [
         'Strict accelerator mode requested',
-        'Fallback is deliberately disabled so accelerator failure is visible',
+        'Runtime explicitly supports verifiable zero-fallback acceleration',
       ],
     };
   }

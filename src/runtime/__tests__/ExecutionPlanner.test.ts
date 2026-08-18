@@ -1,9 +1,5 @@
 import {planExecution} from '../ExecutionPlanner';
-import {
-  DeviceCapabilityProfile,
-  ModelProfile,
-  RuntimeSupport,
-} from '../types';
+import {DeviceCapabilityProfile, ModelProfile, RuntimeSupport} from '../types';
 
 const model: ModelProfile = {
   id: 'test-model',

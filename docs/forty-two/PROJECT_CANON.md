@@ -1,6 +1,6 @@
 # Forty-Two AI — Project Canon
 
-**Last continuity checkpoint:** 2026-08-17 23:18 BRT (UTC-03:00)
+**Last continuity checkpoint:** 2026-08-18 00:38 BRT (UTC-03:00)
 
 ## Canonical project
 
@@ -8,9 +8,11 @@ The active project is **`bobbygodias/Forty-Two-AI`**.
 
 `bobbygodias/pocketpal-enterprise` is predecessor/derivation context only. It may be consulted for engineering history, but it must not be treated as the current canonical project.
 
-The durable record of what is reused, learned, rejected and preserved from PocketPal/PocketPal Enterprise, MNN Chat and the MEGA 3 work lives in:
+The durable project continuity record is split deliberately:
 
-- `docs/forty-two/ENGINEERING_LINEAGE_AND_LESSONS.md`
+- `docs/forty-two/ENGINEERING_LINEAGE_AND_LESSONS.md` — what is reused, learned, rejected and preserved from PocketPal/PocketPal Enterprise, MNN Chat and the MEGA 3 work;
+- `docs/forty-two/JOY_UX_AND_REFERENCES.md` — the human/joy objective, microcopy/easter-egg policy, reference hierarchy, serious-warning rules, internet-access warning policy and explicit **no-Star-Wars** constraint;
+- `docs/forty-two/BRAND_AND_LORE.md` — visual language and Forty-Two/Hitchhiker lore.
 
 ## Canonical product identity
 
@@ -20,7 +22,13 @@ The durable record of what is reused, learned, rejected and preserved from Pocke
 - Splash/key visual: cinematic landscape composition with the emblem and wordmark
 - Startup intro: `introFortyTwoAI.mp4` master preserved outside normal Git history until/if an optimized runtime derivative is integrated
 
-The visual language and lore remain defined in `docs/forty-two/BRAND_AND_LORE.md`.
+## Human product objective
+
+Forty-Two AI is not intended to be only a technically competent local inference shell. When appropriate, the experience should leave the user a little lighter, more amused or more curious than when they opened it, without making therapeutic claims, forcing cheerfulness or hiding serious information behind humor.
+
+Cultural references are optional delight, never required knowledge for using the interface.
+
+Star Trek references are welcome. The Hitchhiker’s Guide to the Galaxy is canonical to the Forty-Two identity. **Star Wars references are explicitly excluded.**
 
 ## Source masters preserved in Project Files
 

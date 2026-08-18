@@ -47,6 +47,7 @@ export interface CpuCapabilityProfile {
   i8mm: boolean;
 }
 
+/** Hardware capability measured independently of any inference engine. */
 export interface AcceleratorCapability {
   id: string;
   kind: 'gpu' | 'npu';
@@ -82,10 +83,30 @@ export interface ModelProfile {
   modalities?: Array<'text' | 'vision' | 'audio'>;
 }
 
+/**
+ * Device exposed by a concrete runtime/engine. This is intentionally distinct
+ * from AcceleratorCapability: a physical GPU may exist while a particular
+ * engine exposes no usable GPU device at all.
+ */
+export interface RuntimeDeviceDescriptor {
+  id: string;
+  name: string;
+  device: ComputeDeviceKind;
+  api?: AcceleratorApi;
+  backend?: string;
+  memoryBytes?: number;
+  metadata?: Record<string, unknown>;
+}
+
 export interface RuntimeTarget {
   device: ComputeDeviceKind;
   api?: AcceleratorApi;
+  /** Hardware probe identity. */
   acceleratorId?: string;
+  /** Opaque device identity that the selected runtime understands. */
+  runtimeDeviceId?: string;
+  /** Human/debug label reported by the runtime. Never use this as hardware policy. */
+  runtimeDeviceName?: string;
 }
 
 export interface RuntimeSupport {
@@ -115,6 +136,25 @@ export interface ExecutionPlan {
   reasons: string[];
 }
 
+/**
+ * Semantic load settings shared by runtime adapters. Each adapter translates
+ * only the fields it supports to its native API.
+ */
+export interface RuntimeLoadSettings {
+  contextSize?: number;
+  batchSize?: number;
+  microBatchSize?: number;
+  threads?: number;
+  flashAttention?: 'auto' | 'on' | 'off';
+  cacheTypeK?: string;
+  cacheTypeV?: string;
+  unifiedKv?: boolean;
+  parallelism?: number;
+  useMlock?: boolean;
+  useMmap?: boolean;
+  noExtraBuffers?: boolean;
+}
+
 export interface RuntimeTelemetry {
   adapter: RuntimeAdapterId;
   requestedPlan: ExecutionPlan;
@@ -135,13 +175,22 @@ export interface RuntimeLoadRequest {
   model: ModelProfile;
   plan: ExecutionPlan;
   modelPath: string;
+  settings?: RuntimeLoadSettings;
+}
+
+export interface RuntimeStreamEvent {
+  token?: string;
+  content?: string;
+  reasoningContent?: string;
+  toolCalls?: unknown[];
+  accumulatedText?: string;
 }
 
 export interface RuntimeSession {
   readonly telemetry: RuntimeTelemetry;
   complete(
     params: unknown,
-    onToken?: (token: string) => void,
+    onToken?: (event: RuntimeStreamEvent) => void,
   ): Promise<unknown>;
   stop(): Promise<void>;
   unload(): Promise<void>;

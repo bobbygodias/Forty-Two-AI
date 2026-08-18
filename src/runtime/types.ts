@@ -116,6 +116,12 @@ export interface RuntimeSupport {
   targets: RuntimeTarget[];
   supportsLayerSplit: boolean;
   supportsOperatorSplit: boolean;
+  /**
+   * True only when the adapter can prove that accelerator-only execution did
+   * not silently fall back to CPU. A UI must not expose Strict as available
+   * when this is false.
+   */
+  supportsStrictAcceleration: boolean;
 }
 
 export interface ExecutionPlan {

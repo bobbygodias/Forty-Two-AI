@@ -49,7 +49,9 @@ function verifiedAcceleratorTarget(
   return support.targets.find(target => isVerifiedAccelerator(target, device));
 }
 
-function chooseHybridStrategy(support: RuntimeSupport): ExecutionStrategy | null {
+function chooseHybridStrategy(
+  support: RuntimeSupport,
+): ExecutionStrategy | null {
   if (support.supportsLayerSplit) {
     return 'layer-split';
   }
@@ -183,7 +185,9 @@ export function planExecution({
         primary: accelerated.accelerator,
         fallback: accelerated.cpu,
         partition:
-          hybridStrategy === 'layer-split' ? estimatePartition(model) : undefined,
+          hybridStrategy === 'layer-split'
+            ? estimatePartition(model)
+            : undefined,
         memoryBudgetBytes: budget,
         reasons: [
           'Verified accelerator available',

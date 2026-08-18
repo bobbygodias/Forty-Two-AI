@@ -24,10 +24,10 @@ jest.mock('../../ChatHeaderTitle', () => ({
   },
 }));
 
-jest.mock('../../EnterpriseQuickPanel', () => ({
-  EnterpriseQuickPanel: () => {
+jest.mock('../../FortyTwoQuickPanel', () => ({
+  FortyTwoQuickPanel: () => {
     const {View} = require('react-native');
-    return <View testID="enterprise-quick-panel" />;
+    return <View testID="forty-two-quick-panel" />;
   },
 }));
 
@@ -55,7 +55,7 @@ describe('ChatHeader', () => {
     expect(getByTestId('header-left')).toBeTruthy();
     expect(getByTestId('header-right')).toBeTruthy();
     expect(getByTestId('chat-header-title')).toBeTruthy();
-    expect(getByTestId('enterprise-quick-panel')).toBeTruthy();
+    expect(getByTestId('forty-two-quick-panel')).toBeTruthy();
   });
 
   it('applies correct styles when header divider should not be shown', () => {

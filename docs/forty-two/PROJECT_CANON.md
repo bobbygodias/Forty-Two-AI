@@ -1,10 +1,16 @@
 # Forty-Two AI — Project Canon
 
+**Last continuity checkpoint:** 2026-08-17 23:18 BRT (UTC-03:00)
+
 ## Canonical project
 
 The active project is **`bobbygodias/Forty-Two-AI`**.
 
 `bobbygodias/pocketpal-enterprise` is predecessor/derivation context only. It may be consulted for engineering history, but it must not be treated as the current canonical project.
+
+The durable record of what is reused, learned, rejected and preserved from PocketPal/PocketPal Enterprise, MNN Chat and the MEGA 3 work lives in:
+
+- `docs/forty-two/ENGINEERING_LINEAGE_AND_LESSONS.md`
 
 ## Canonical product identity
 
@@ -55,6 +61,10 @@ Current preserved reference-only artifacts:
 ## Engineering continuity
 
 Forty-Two AI is local-first and chat-first. The current acceleration target is the Blackview MEGA 3 / Mali-G57 MC2. CPU fallback must remain valid. Hardware capability detection must never be presented as proof that an inference backend is actually active: requested backend, effective backend and effective offload must be reported separately.
+
+## Chronology rule
+
+Human-readable project checkpoints and continuity documents should include an absolute **date + local time + timezone**. Git commit timestamps remain authoritative for code history. This avoids ambiguity when long chats freeze, resume later or are reconstructed from Project Files.
 
 ## Preservation rule
 

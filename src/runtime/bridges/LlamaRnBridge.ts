@@ -96,7 +96,9 @@ function applyLoadSettings(
     params.cache_type_v = settings.cacheTypeV as ContextParams['cache_type_v'];
   }
   if (settings.unifiedKv !== undefined) params.kv_unified = settings.unifiedKv;
-  if (settings.parallelism !== undefined) params.n_parallel = settings.parallelism;
+  if (settings.parallelism !== undefined) {
+    params.n_parallel = settings.parallelism;
+  }
   if (settings.useMlock !== undefined) params.use_mlock = settings.useMlock;
   if (settings.useMmap !== undefined) params.use_mmap = settings.useMmap;
   if (settings.noExtraBuffers !== undefined) {

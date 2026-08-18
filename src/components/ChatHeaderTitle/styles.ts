@@ -18,11 +18,10 @@ export const createStyles = (theme: Theme) =>
       gap: 6,
       minWidth: 0,
     },
-    onlineDot: {
+    statusDot: {
       width: 6,
       height: 6,
       borderRadius: 3,
-      backgroundColor: theme.colors.primary,
     },
     subtitle: {
       flexShrink: 1,

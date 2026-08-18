@@ -40,6 +40,7 @@ export class GGMLAdapter implements RuntimeAdapter {
         targets: [],
         supportsLayerSplit: false,
         supportsOperatorSplit: false,
+        supportsStrictAcceleration: false,
       };
     }
 
@@ -90,6 +91,10 @@ export class GGMLAdapter implements RuntimeAdapter {
       // counts still have to come back through telemetry.
       supportsLayerSplit: hasAccelerator,
       supportsOperatorSplit: false,
+      // llama.rn currently reports whether a context is using GPU, but the
+      // Forty-Two contract requires proof that unsupported operators did not
+      // silently execute on CPU before we advertise strict accelerator mode.
+      supportsStrictAcceleration: false,
     };
   }
 

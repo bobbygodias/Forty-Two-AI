@@ -5,7 +5,7 @@
 export const FORTY_TWO_LORE = {
   dontPanic: 'NÃO ENTRE EM PÂNICO',
   mostlyHarmless: 'Majoritariamente inofensivo',
-  thanksForAllTheFish: 'E obrigado pelos peixes.',
+  thanksForAllTheFish: 'Até mais, e obrigado pelos peixes!',
   answer: 42,
 } as const;
 

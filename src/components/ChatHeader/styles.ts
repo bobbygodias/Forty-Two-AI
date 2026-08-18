@@ -15,6 +15,7 @@ export const createStyles = ({
     container: {
       height: headerHeight,
       paddingTop: insets.top,
+      paddingHorizontal: 8,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -35,18 +36,23 @@ export const createStyles = ({
       flexShrink: 0,
     },
     menuIcon: {
-      height: 40,
-      width: 40,
+      height: 44,
+      width: 44,
       justifyContent: 'center',
       alignItems: 'center',
     },
     headerWithoutDivider: {
       elevation: 0,
       shadowOpacity: 0,
-      borderBottomWidth: 0,
-      backgroundColor: theme.colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: 'transparent',
+      backgroundColor: theme.colors.surface,
     },
     headerWithDivider: {
-      backgroundColor: theme.colors.background,
+      elevation: 0,
+      shadowOpacity: 0,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outline,
+      backgroundColor: theme.colors.surface,
     },
   });

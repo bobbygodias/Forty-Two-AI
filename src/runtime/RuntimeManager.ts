@@ -6,6 +6,7 @@ import {
   ModelProfile,
   RuntimeAdapter,
   RuntimeAdapterId,
+  RuntimeLoadSettings,
   RuntimeSession,
   RuntimeSupport,
 } from './types';
@@ -67,15 +68,18 @@ export class RuntimeManager {
     modelPath: string,
     device: DeviceCapabilityProfile,
     policy: ExecutionPolicy = 'automatic',
+    settings?: RuntimeLoadSettings,
   ): Promise<RuntimeSession> {
     const {plan} = await this.select(model, device, policy);
     const adapter = this.adapters.get(plan.adapter);
 
     if (!adapter) {
-      throw new Error(`Runtime adapter disappeared during selection: ${plan.adapter}`);
+      throw new Error(
+        `Runtime adapter disappeared during selection: ${plan.adapter}`,
+      );
     }
 
-    return adapter.load({model, modelPath, plan});
+    return adapter.load({model, modelPath, plan, settings});
   }
 }
 

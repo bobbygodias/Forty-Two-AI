@@ -8,10 +8,10 @@ export const createStyles = ({theme}: {theme: Theme}) =>
     },
     flatList: {
       height: '100%',
-      // flex: 1,
     },
     flatListContentContainer: {
       flexGrow: 1,
+      paddingHorizontal: 6,
     },
     footer: {
       height: 16,
@@ -32,8 +32,8 @@ export const createStyles = ({theme}: {theme: Theme}) =>
       position: 'absolute',
       right: 16,
       backgroundColor: theme.colors.primary,
-      width: 35,
-      height: 35,
+      width: 40,
+      height: 40,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
@@ -54,12 +54,14 @@ export const createStyles = ({theme}: {theme: Theme}) =>
       backgroundColor: 'transparent',
     },
     inputContainer: {
-      borderTopLeftRadius: theme.borders.inputBorderRadius,
-      borderTopRightRadius: theme.borders.inputBorderRadius,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      overflow: 'hidden',
       position: 'absolute',
       zIndex: 10,
-      left: 0,
-      right: 0,
+      left: 12,
+      right: 12,
       bottom: 0,
       ...(!theme.dark
         ? {

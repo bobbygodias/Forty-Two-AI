@@ -14,12 +14,19 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useTheme} from '../../hooks';
 import {
+  chatSessionStore,
   enterpriseRuntimeStore,
   type EnterpriseEffectiveBackend,
   type EnterpriseRequestedBackend,
   modelStore,
+  palStore,
 } from '../../store';
 import {ModelOrigin, type Theme} from '../../utils/types';
+
+interface Props {
+  onOpenModelPalPicker?: () => void;
+  onOpenGenerationSettings?: () => void;
+}
 
 const requestedLabels: Record<EnterpriseRequestedBackend, string> = {
   auto: 'Automático',
@@ -81,7 +88,8 @@ const statusColor = (backend: EnterpriseEffectiveBackend, theme: Theme) => {
   }
 };
 
-export const FortyTwoQuickPanel: React.FC = observer(() => {
+export const FortyTwoQuickPanel = observer((props: Props) => {
+  const {onOpenModelPalPicker, onOpenGenerationSettings} = props;
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const {width, height} = useWindowDimensions();
@@ -100,6 +108,9 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
   );
 
   const activeModel = modelStore.activeModel;
+  const activePal = chatSessionStore.activePalId
+    ? palStore.pals.find(pal => pal.id === chatSessionStore.activePalId)
+    : undefined;
   const isRemoteModel = activeModel?.origin === ModelOrigin.REMOTE;
   const requested = enterpriseRuntimeStore.requestedBackend;
   const effective = enterpriseRuntimeStore.effectiveBackend;
@@ -129,6 +140,11 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
     enterpriseRuntimeStore.gpuBackendDevice?.deviceName ||
     'Não exposta pelo runtime';
   const effectiveLayers = enterpriseRuntimeStore.effectiveGpuLayers;
+
+  const closeAndOpen = (callback?: () => void) => {
+    setVisible(false);
+    callback?.();
+  };
 
   return (
     <>
@@ -185,6 +201,9 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
                 <Text variant="titleMedium" numberOfLines={2}>
                   {activeModel?.name ?? 'Nenhum modelo carregado'}
                 </Text>
+                <Text variant="bodyMedium" style={styles.muted}>
+                  Pal: {activePal?.name ?? 'Nenhum Pal ativo'}
+                </Text>
 
                 <View style={styles.effectiveBadge}>
                   <View style={[styles.dot, {backgroundColor: color}]} />
@@ -208,6 +227,23 @@ export const FortyTwoQuickPanel: React.FC = observer(() => {
                       effectiveLayers === null ? '—' : String(effectiveLayers)
                     }
                   />
+                </View>
+
+                <View style={styles.quickActions}>
+                  <Button
+                    mode="outlined"
+                    icon="account-switch-outline"
+                    disabled={!onOpenModelPalPicker}
+                    onPress={() => closeAndOpen(onOpenModelPalPicker)}>
+                    Modelo e Pal
+                  </Button>
+                  <Button
+                    mode="outlined"
+                    icon="tune-vertical"
+                    disabled={!onOpenGenerationSettings}
+                    onPress={() => closeAndOpen(onOpenGenerationSettings)}>
+                    Parâmetros
+                  </Button>
                 </View>
               </View>
 
@@ -457,6 +493,7 @@ const createStyles = (
       gap: 8,
     },
     metrics: {flexDirection: 'row', gap: 14},
+    quickActions: {gap: 8},
     section: {gap: 4},
     grid: {flexDirection: 'row', flexWrap: 'wrap', gap: 10},
     option: {

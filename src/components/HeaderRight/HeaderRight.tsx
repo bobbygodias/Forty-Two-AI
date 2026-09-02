@@ -33,7 +33,12 @@ import {
 import {RenameModal, UsageStats} from '..';
 import {ChatGenerationSettingsSheet} from '..';
 
-export const HeaderRight: React.FC = observer(() => {
+interface Props {
+  onOpenGenerationSettings?: () => void;
+}
+
+export const HeaderRight = observer((props: Props) => {
+  const {onOpenGenerationSettings} = props;
   const theme = useTheme();
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [renameModalVisible, setRenameModalVisible] = React.useState(false);
@@ -61,7 +66,11 @@ export const HeaderRight: React.FC = observer(() => {
   };
 
   const onPressGenerationSettings = () => {
-    setChatGenerationSettingsVisible(true);
+    if (onOpenGenerationSettings) {
+      onOpenGenerationSettings();
+    } else {
+      setChatGenerationSettingsVisible(true);
+    }
     closeMenu();
   };
 
@@ -253,10 +262,12 @@ export const HeaderRight: React.FC = observer(() => {
           leadingIcon={() => <ShareIcon stroke={theme.colors.primary} />}
         />
       </Menu>
-      <ChatGenerationSettingsSheet
-        isVisible={chatGenerationSettingsVisible}
-        onClose={() => setChatGenerationSettingsVisible(false)}
-      />
+      {!onOpenGenerationSettings ? (
+        <ChatGenerationSettingsSheet
+          isVisible={chatGenerationSettingsVisible}
+          onClose={() => setChatGenerationSettingsVisible(false)}
+        />
+      ) : null}
       {session && (
         <RenameModal
           visible={renameModalVisible}

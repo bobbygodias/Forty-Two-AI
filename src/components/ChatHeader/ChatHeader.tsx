@@ -15,7 +15,13 @@ import {useTheme} from '../../hooks';
 import {chatSessionStore} from '../../store';
 import {HeaderLeft} from '../HeaderLeft';
 
-export const ChatHeader: React.FC = observer(() => {
+interface Props {
+  onOpenModelPalPicker?: () => void;
+  onOpenGenerationSettings?: () => void;
+}
+
+export const ChatHeader = observer((props: Props) => {
+  const {onOpenModelPalPicker, onOpenGenerationSettings} = props;
   const theme = useTheme();
 
   const insets = useSafeAreaInsets();
@@ -41,8 +47,11 @@ export const ChatHeader: React.FC = observer(() => {
         <ChatHeaderTitle />
       </View>
       <View style={styles.rightSection}>
-        <FortyTwoQuickPanel />
-        <HeaderRight />
+        <FortyTwoQuickPanel
+          onOpenModelPalPicker={onOpenModelPalPicker}
+          onOpenGenerationSettings={onOpenGenerationSettings}
+        />
+        <HeaderRight onOpenGenerationSettings={onOpenGenerationSettings} />
       </View>
     </View>
   );

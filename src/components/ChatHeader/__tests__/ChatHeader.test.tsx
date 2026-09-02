@@ -10,11 +10,13 @@ jest.mock('../../HeaderLeft', () => ({
   },
 }));
 
+const mockHeaderRight = jest.fn((_props: object) => {
+  const {View} = require('react-native');
+  return <View testID="header-right" />;
+});
+
 jest.mock('../../HeaderRight', () => ({
-  HeaderRight: () => {
-    const {View} = require('react-native');
-    return <View testID="header-right" />;
-  },
+  HeaderRight: (props: object) => mockHeaderRight(props),
 }));
 
 jest.mock('../../ChatHeaderTitle', () => ({
@@ -24,11 +26,13 @@ jest.mock('../../ChatHeaderTitle', () => ({
   },
 }));
 
+const mockFortyTwoQuickPanel = jest.fn((_props: object) => {
+  const {View} = require('react-native');
+  return <View testID="forty-two-quick-panel" />;
+});
+
 jest.mock('../../FortyTwoQuickPanel', () => ({
-  FortyTwoQuickPanel: () => {
-    const {View} = require('react-native');
-    return <View testID="forty-two-quick-panel" />;
-  },
+  FortyTwoQuickPanel: (props: object) => mockFortyTwoQuickPanel(props),
 }));
 
 // Create a mock store object
@@ -56,6 +60,26 @@ describe('ChatHeader', () => {
     expect(getByTestId('header-right')).toBeTruthy();
     expect(getByTestId('chat-header-title')).toBeTruthy();
     expect(getByTestId('forty-two-quick-panel')).toBeTruthy();
+  });
+
+  it('forwards quick-control callbacks to the Forty-Two panel', () => {
+    const onOpenModelPalPicker = jest.fn();
+    const onOpenGenerationSettings = jest.fn();
+
+    render(
+      <ChatHeader
+        onOpenModelPalPicker={onOpenModelPalPicker}
+        onOpenGenerationSettings={onOpenGenerationSettings}
+      />,
+    );
+
+    expect(mockFortyTwoQuickPanel).toHaveBeenLastCalledWith({
+      onOpenModelPalPicker,
+      onOpenGenerationSettings,
+    });
+    expect(mockHeaderRight).toHaveBeenLastCalledWith({
+      onOpenGenerationSettings,
+    });
   });
 
   it('applies correct styles when header divider should not be shown', () => {

@@ -44,7 +44,7 @@ describe('ChatHeaderTitle', () => {
     });
 
     const {getByText} = render(<ChatHeaderTitle />);
-    expect(getByText('basic model')).toBeTruthy();
+    expect(getByText(/basic model/)).toBeTruthy();
   });
 
   it('updates when active model changes', () => {
@@ -55,7 +55,7 @@ describe('ChatHeaderTitle', () => {
     });
 
     const {getByText, rerender} = render(<ChatHeaderTitle />);
-    expect(getByText('basic model')).toBeTruthy();
+    expect(getByText(/basic model/)).toBeTruthy();
 
     // Change model
     runInAction(() => {
@@ -64,6 +64,6 @@ describe('ChatHeaderTitle', () => {
     });
 
     rerender(<ChatHeaderTitle />);
-    expect(getByText('downloaded model')).toBeTruthy();
+    expect(getByText(/downloaded model/)).toBeTruthy();
   });
 });

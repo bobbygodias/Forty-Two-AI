@@ -1,6 +1,6 @@
 # Forty-Two AI — Project Canon
 
-**Last continuity checkpoint:** 2026-08-18 00:38 BRT (UTC-03:00)
+**Last continuity checkpoint:** 2026-09-02 07:07 BRT (UTC-03:00)
 
 ## Canonical project
 
@@ -38,7 +38,7 @@ The current master artifacts are tracked by SHA-256 so they remain identifiable 
 - logo/wordmark master, 1254×1254 PNG: `b49a78296320da607b2ea61eb17ce14ef33c5fa518085b18a1ff9d0488729738`
 - splash master, 1586×992 PNG: `07537b6d6abce8e5d0643fbb00c4139705e384e0aa7b6f4fda12f053594ae786`
 - startup intro MP4, 688×752 H.264/AAC, ~12.04 s: `6ba07d556b4026824d333c8f24ad1f35b4f48ac1388f319231961f9756493419`
-- Android launcher asset bundle: `6a9d522241cbd5dd18a30f45e8bb3bf43ca8fac40731831c550dd40331a85153`
+- Android launcher asset bundle, added to Project Files as `Forty Two AI icons.zip`: `2786a44e36b0572e42041a980d25e85a0bede6f8bfa7f67f9970762847e9c4ca`
 
 ## What belongs in Git
 
@@ -69,6 +69,22 @@ Current preserved reference-only artifacts:
 ## Engineering continuity
 
 Forty-Two AI is local-first and chat-first. The current acceleration target is the Blackview MEGA 3 / Mali-G57 MC2. CPU fallback must remain valid. Hardware capability detection must never be presented as proof that an inference backend is actually active: requested backend, effective backend and effective offload must be reported separately.
+
+## Active implementation state
+
+- Canonical `main` observed at `3a311bd36469b2584ae518537b45339bdbbc550a`.
+- Draft PR #1, branch `runtime/orchestrator-v1`, remains the isolated runtime-orchestrator foundation; its observed head is `c41e1438440291b8ee34e3a6dd58ee8f814be767`.
+- Draft PR #2, branch `ui/forty-two-chat-shell-v1`, is the active UI integration line. The current slice starts from `9cf72644b189965fdec333d93a00607c3fe811c5` and installs the official Android launcher assets, adaptive-icon definitions, Play Store derivative and direct quick-panel access to the existing model/Pal picker and generation parameters.
+- The UI slice does not modify the Kotlin/JNI bridge or claim Vulkan execution. Runtime integration remains separate until the branches are reconciled deliberately and effective-backend telemetry is verified on device.
+
+### Verification at this checkpoint
+
+- TypeScript compilation: passed.
+- Repository ESLint: passed with 0 errors and 7 pre-existing warnings in unrelated files.
+- Localization and bundled-font validation: passed.
+- `ChatHeader` and `HeaderRight` callback-routing tests: 13 passed.
+- Android launcher dimensions, PNG readability, XML parsing and resource-variant inventory: passed.
+- Local Gradle resource processing: not completed because the isolated environment could not reach `services.gradle.org` to download Gradle 9.0.0; repository CI is the authoritative next build check.
 
 ## Chronology rule
 

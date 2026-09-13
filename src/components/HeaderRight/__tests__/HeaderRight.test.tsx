@@ -133,6 +133,21 @@ describe('HeaderRight', () => {
         expect(getByTestId('chat-generation-settings-sheet')).toBeTruthy();
       });
 
+      it('routes generation settings through an external quick control', async () => {
+        const onOpenGenerationSettings = jest.fn();
+        const {getByTestId, findByText, queryByTestId} = renderWithI18n(
+          <HeaderRight onOpenGenerationSettings={onOpenGenerationSettings} />,
+        );
+        fireEvent.press(getByTestId('menu-button'));
+
+        fireEvent.press(
+          await findByText(l10n.en.components.headerRight.generationSettings),
+        );
+
+        expect(onOpenGenerationSettings).toHaveBeenCalledTimes(1);
+        expect(queryByTestId('chat-generation-settings-sheet')).toBeNull();
+      });
+
       it('handles delete action with confirmation', async () => {
         const {getByTestId, findByText} = renderWithI18n(<HeaderRight />);
         const menuButton = getByTestId('menu-button');

@@ -75,6 +75,7 @@ import {
   Menu,
   PendingIndicator,
   ChatPalModelPickerSheet,
+  ChatGenerationSettingsSheet,
   ChatHeader,
   ChatEmptyPlaceholder,
   VideoPalEmptyPlaceholder,
@@ -256,6 +257,8 @@ export const ChatView = observer(
     inputTextRef.current = inputText;
     const [inputImages, setInputImages] = React.useState<string[]>([]);
     const [isPickerVisible, setIsPickerVisible] = React.useState(false);
+    const [isGenerationSettingsVisible, setIsGenerationSettingsVisible] =
+      React.useState(false);
     const [_selectedModel, setSelectedModel] = React.useState<string | null>(
       null,
     );
@@ -1126,7 +1129,12 @@ export const ChatView = observer(
           onLayout={onLayout}>
           {/* Header */}
           <View style={styles.headerWrapper}>
-            <ChatHeader />
+            <ChatHeader
+              onOpenModelPalPicker={() => setIsPickerVisible(true)}
+              onOpenGenerationSettings={() =>
+                setIsGenerationSettingsVisible(true)
+              }
+            />
           </View>
 
           {/* Main chat container */}
@@ -1215,6 +1223,11 @@ export const ChatView = observer(
                 chatInputHeight={chatInputHeight.height}
               />
             )}
+
+            <ChatGenerationSettingsSheet
+              isVisible={isGenerationSettingsVisible}
+              onClose={() => setIsGenerationSettingsVisible(false)}
+            />
           </Reanimated.View>
 
           {/* Image viewer */}
